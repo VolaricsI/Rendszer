@@ -20,3 +20,11 @@ systemd-analyze verify default.target |perl -lne 'print $1 if m{Found.*?on\s+([^
 
 ##	voli-rc, voli-rc.service
 		Induláskor ezeket kell beállítani
+
+##	voli-openvpn-starter.service
+		Minden OpenVPN configra indít egy service-t, a gyári Unit-ot amiben modosítottam:
+			[Service]
+			    RestartSec=30
+			    Restart=always
+		Illetve az voli-openvpn-edit script ezt végleg legyártja
+
