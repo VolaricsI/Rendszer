@@ -1,0 +1,14 @@
+#!/bin/bash
+# Author: Volarics István <volaricsi@freemail.hu>
+#	Create by Voli
+
+#:::::: Fix beallitasok :::::::
+#:::::: Beallitasok :::::::::::
+#:::::: Ellenorzesek ::::::::::
+
+swapoff -a
+swapon  -a
+
+#sync
+
+echo 3 >/proc/sys/vm/drop_caches

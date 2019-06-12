@@ -12,5 +12,8 @@ Rendszer üzemeltetéshez kapcsolódó dolgok
 	    vpn_key_time
 		Az openvpn p12-es kulcsainak lejárati idejét figyeli
 
+	    mem_cache_flush
+		A cache-ek üresíti ki
+
 
     ## INIT
