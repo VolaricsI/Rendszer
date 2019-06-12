@@ -1,0 +1,25 @@
+[Unit]
+Description=IR Exec service by Voli
+
+After=local-fs.target voli-lirc.service
+Requires=voli-lirc.service
+
+ConditionFileIsExecutable=/usr/bin/irexec
+ConditionPathExists=/etc/lirc/lircrc
+
+
+[Service]
+Type=simple
+RestartSec=15s
+Restart=always
+
+	    ## A régi indító script-et elmozgatom a biztonság kedvéért
+ExecStartPre=/bin/bash -c "[ -e /etc/init.d/lirc ] && mv /etc/init.d/lirc /etc/init.d.nemkell/ ; exit 0 "
+
+
+ExecStart=/usr/bin/irexec /etc/lirc/lircrc
+
+
+[Install]
+WantedBy=multi-user.target
+Alias=irexec.service
