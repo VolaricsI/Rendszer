@@ -18,6 +18,15 @@ systemd-analyze verify default.target |perl -lne 'print $1 if m{Found.*?on\s+([^
 ##	edit-mythtv-backend.service.sh
 		A mythtv-backend service-nek kell a mysql service
 
+##	edit-docker.service.sh
+		A docker.service-nek kell hogy a /var/lib/docker egy csatolási pont legyen, így minden adata külön volume-ra kerül
+
+##	edit-voli-openvpn.sh
+		Az openvpn@service mindíg induljon újra
+
+##	voli-mythtv-switch.service
+		A MythTV fronted-jét (megjelenítő/TV)  ki/be kapcsolgatja, jellemzően a távirányító használja
+
 ##	voli-irexec.service, voli-lirc.service
 		Kellenek a távirányítóhoz tiltja a lirc-et
 
