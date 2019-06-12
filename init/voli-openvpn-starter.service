@@ -16,7 +16,7 @@ WorkingDirectory=/etc/openvpn/
 	## Le kell tiltani a SysV-ös scriptet ==> systemctl disable openvpn
 ExecStartPre=/bin/bash -c "[ -e /etc/init.d/openvpn ] && mv /etc/init.d/openvpn /etc/init.d.nemkell/ ; exit 0 "
 
-ExecStart=/bin/bash -c ' ls |grep -e "\\.conf$" |sed 's/.conf$//g' |while read a; do echo systemctl start openvpn@$a.service; systemctl start openvpn@$a.service; done; exit 0; '
+ExecStart=/bin/bash -c ' ls |grep -e "\\.conf$" |sed 's/.conf$//g' |while read a; do echo systemctl restart openvpn@$a.service; systemctl restart openvpn@$a.service; done; exit 0; '
 
 
 [Install]
