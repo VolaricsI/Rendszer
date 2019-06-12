@@ -1,0 +1,31 @@
+#!/bin/bash
+# Author: Volarics István <volaricsi@freemail.hu>
+#	Create by Voli
+
+#:::::: Fix beallitasok :::::::
+VPN_FILE_IP=/etc/openvpn/1_munin-srv.ipp
+VPN_FILE_STATUS=/etc/openvpn/1_munin-srv.status
+#:::::: Beallitasok :::::::::::
+MUNIN_DIR=/etc/munin/munin-conf.d
+S_routeing="CLIENT_LIST"
+S_munin=address
+#:::::: Ellenorzesek ::::::::::
+
+cat ${VPN_FILE_IP}|sed 's/,.\+$//g;'|while read a; do
+
+    Ip_Current=$( cat ${VPN_FILE_STATUS}|grep "${S_routeing}"|grep "${a}"|sed "s/^.*${a},[0-9.:]\+,//g; s/,.*$//g; ")
+
+    Ip_munin=$( [ -r ${MUNIN_DIR}/${a}.conf ] && cat ${MUNIN_DIR}/${a}.conf|grep "${S_munin}"|sed "s/.*${S_munin}//g; s/[ \t]\+//g; " )
+
+
+    if [ "${Ip_Current}" = "${Ip_munin}" ] ; then
+#	echo -----${Ip_Current} = ${Ip_munin}-----
+	continue;
+    fi
+
+    echo "A VPN-ben hasznalt nev: ${a}."
+    echo "A tarolt IP: 		${Ip_record}"
+    echo "Az aktualis IP: 	${Ip_Current}"
+    echo "A munin-ban IP: 	${Ip_munin}"
+    echo
+done
