@@ -15,6 +15,9 @@ A hibás függőségeket jeleníti meg grafikussan; jellemzően üres kimenetet 
 systemd-analyze verify default.target |perl -lne 'print $1 if m{Found.*?on\s+([^/]+)}' | xargs --no-run-if-empty systemd-analyze dot | dot -Tsvg >cycle.svg
 
 
+##	edit-mythtv-backend.service.sh
+		A mythtv-backend service-nek kell a mysql service
+
 ##	voli-irexec.service, voli-lirc.service
 		Kellenek a távirányítóhoz tiltja a lirc-et
 
