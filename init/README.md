@@ -10,9 +10,9 @@
 
 
 ---------------------------
-A hibás függőségeket jeleníti meg grafikussan
+A hibás függőségeket jeleníti meg grafikussan; jellemzően üres kimenetet ad, elvére ilyen nem lehet
 
-systemd-analyze verify default.target |& perl -lne 'print $1 if m{Found.*?on\s+([^/]+)}' | xargs --no-run-if-empty systemd-analyze dot | dot -Tsvg >cycle.svg
+systemd-analyze verify default.target |perl -lne 'print $1 if m{Found.*?on\s+([^/]+)}' | xargs --no-run-if-empty systemd-analyze dot | dot -Tsvg >cycle.svg
 
 
 ##	voli-irexec.service, voli-lirc.service
