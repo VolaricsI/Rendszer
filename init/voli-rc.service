@@ -1,0 +1,15 @@
+#By Voli
+[Unit]
+Description=Alapvető beállításokat valósít meg by Voli
+
+After=local-fs.target
+
+
+[Service]
+Type=oneshot
+
+ExecStart=/etc/voli/init/voli-rc
+
+
+[Install]
+WantedBy=multi-user.target

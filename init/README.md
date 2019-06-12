@@ -18,3 +18,5 @@ systemd-analyze verify default.target |perl -lne 'print $1 if m{Found.*?on\s+([^
 ##	voli-irexec.service, voli-lirc.service
 		Kellenek a távirányítóhoz tiltja a lirc-et
 
+##	voli-rc, voli-rc.service
+		Induláskor ezeket kell beállítani
