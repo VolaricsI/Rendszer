@@ -19,5 +19,14 @@ Rendszer üzemeltetéshez kapcsolódó dolgok
 		A munin cliensek openvpn-en keresztül csatlakoznak be és azt ellenőrzi, hogy 
 		a munin configban és az openvpn állapotában keres eltéréseket.
 
+	    idokep_db [mentes]
+		A helyi időkép autómatából kiolvassa (webes interface ) az adatokat és betölti egy adatbázisba
+		illetve menteni is tudja az adatbázist
+
+	    idokep_ellenorzes
+		Egy időkép állomás (volaricsi) adatainak frisseségét ellenőrzi (mikori adatok vannaz az időkép oldalán)
+
+
+
     ## INIT
 		Saját leíró file-a van

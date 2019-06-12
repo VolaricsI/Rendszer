@@ -1,0 +1,35 @@
+#!/bin/bash
+#	Created by Volarics Istvan (Voli)
+#Ha 1 óránál régebbi adat van az idokep.hu-n akkor már jön is az üzenet.
+#NE futtasd 5 percenként sűrűbben mert kell idő az első kiolvasáshoz és felküldéshez....
+
+#:::::: Fix beallitasok :::::::
+URL="https://www.idokep.hu/automata/volaricsi"
+WGET_PARAMETERE="--no-check-certificate		-t 1 -T 5 -nv -o /dev/null -O - ${URL}"	#Itt nincs ssl ellenőrzés
+WGET_PARAMETERE="--ca-directory=/etc/ssl/certs	-t 1 -T 5 -nv -o /dev/null -O - ${URL}"	#Ha idemásoltad a tanusítványát
+SOR="Utolsó mérés:"
+#:::::: Beallitasok :::::::::::
+#:::::: Fuggvenyek ::::::::::::
+#:::::::: Start :::::::::::::::
+#===============================================================================
+	IdokepSor=$( wget ${WGET_PARAMETERE}	|grep "${SOR}" )
+
+if [ ".${IdokepSor}" == "." ]; then 
+	echo "Rossz vagy nincs válasz..."
+	exit;
+fi
+
+	Feltoltve=$( echo "${IdokepSor}"|sed "s/.*${SOR}//g; s/.*<b>//g; s/<\/b>.*//g; s/.* //g; s/:/*60+/g; s/^0//g; " )
+
+	Most=$( date "+%k*60+%M" )
+##Most=29*60+2					#Tesztre
+
+	Diff=$[ ( ${Most} ) - ( ${Feltoltve} ) ]
+
+    [ ${Diff} -le 5 ] && exit 0
+
+	echo "---Idő:${Most}	Feltöltve:${Feltoltve}	Differencia:${Diff}/	Túl nagy az idő külömbség..."
+
+#	curl http://192.168.23.90/cgi-bin/luci/admin/system/reboot?reboot=1
+
+	echo ${IdokepSor}
