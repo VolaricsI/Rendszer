@@ -28,3 +28,12 @@ systemd-analyze verify default.target |perl -lne 'print $1 if m{Found.*?on\s+([^
 			    Restart=always
 		Illetve az voli-openvpn-edit script ezt végleg legyártja
 
+##	voli-fetchmail-user.service
+		A Felhasználó tudja élesíteni ( systemctl --user status voli-fetchmail-user.service )
+		és így nem tud még véletlen sem más felhasználóba turkálni..
+
+##	voli-fetchmail@.service
+		A %i felhasználóra indít egy fetchmail-t
+
+##	voli-fetchmail-starter
+		Elindít minden felhasználónak egy voli-fetchmail@.service-t akinek van a $HOME könyvtárában .fetchmailrc file

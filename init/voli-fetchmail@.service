@@ -1,0 +1,18 @@
+[Unit]
+Description=Fetchmail-t a %i felhasznalonak; by Voli
+
+After=local-fs.target network.target
+
+
+[Service]
+Type=simple
+SyslogIdentifier=%N
+
+User=%i
+
+ExecStart=/usr/bin/fetchmail --nodetach --nosyslog  -f ${HOME}/.fetchmailrc
+
+ExecStop =/bin/bash -c "/usr/bin/fetchmail --quit || /bin/true "		## Biztosítéknak és MINDÍG legyen igaz....
+
+[Install]
+WantedBy=default.target

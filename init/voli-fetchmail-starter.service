@@ -1,0 +1,21 @@
+[Unit]
+Description=Fetchmail-t minden felhasznalora, ha van rc file; by Voli
+
+After=local-fs.target network.target
+
+[Service]
+Type=oneshot
+SyslogIdentifier=%N
+
+	## Le kell tiltani a SysV-ös scriptet ==> systemctl disable fetchmail
+ExecStartPre=/bin/bash -c "[ -e /etc/init.d/fetchmail ] && mv /etc/init.d/fetchmail /etc/init.d.nemkell/ ; exit 0 "
+
+
+
+ExecStart=/bin/bash -c 	'grep -v  -e ^root -e :0:0: /etc/passwd |while read a; do 	\
+				if [ -e "$( echo "$a" |cut -d : -f 6 )/.fetchmailrc" ]; then systemctl restart "voli-fetchmail@$( echo "$a"|cut -d : -f 1 ).service"; 	\
+				fi; 	\
+			done'
+
+[Install]
+WantedBy=multi-user.target
