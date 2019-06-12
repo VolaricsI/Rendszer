@@ -1,0 +1,21 @@
+#!/bin/bash
+# Author: Volarics István <volaricsi@freemail.hu>
+#	Create by Voli
+
+#:::::: Fix beallitasok :::::::
+DIR=/etc/openvpn			##Hol vannak a kulcsok
+Szoljon=14				##Ennyi nappal a lejárat elött szóljon
+#:::::: Beallitasok :::::::::::
+P0="notAfter="
+HatarNap=$[ $( date "+%s" ) + ${Szoljon} * 24 * 60 * 60 ]	##Határnap, ez elötti lejárat már intézkedést igényel; másodperc-ben számolva
+#:::::: Ellenorzesek ::::::::::
+
+cd ${DIR}
+
+ls *.p12|sort|while read a; do
+    Lejarat=$( openssl pkcs12 -in $a -password pass: -nodes 2>&1|  openssl x509 -noout -enddate| grep "${P0}"|sed "s/^${P0}//g; " )
+##echo --${Lejarat}-----
+    L0=$( date --date="${Lejarat}" "+%s" )
+    if [ ${HatarNap} -le ${L0} ]; then continue; fi
+    echo "${a} ===> $( date --date="${Lejarat}" )"
+done

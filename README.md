@@ -9,5 +9,8 @@ Rendszer üzemeltetéshez kapcsolódó dolgok
 		    [ alap ] ekkor készíti el a viszonyítási alapot
 		A /etc/voli/smart_kivetelek fie-ban vannak azok az atributumok amelyeket nem kell vizsgálni
 
+	    vpn_key_time
+		Az openvpn p12-es kulcsainak lejárati idejét figyeli
+
 
     ## INIT
