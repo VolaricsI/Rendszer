@@ -1,0 +1,69 @@
+#!/bin/bash
+#	Created by Volarics Istvan (Voli)
+
+#:::::: Fix beallitasok :::::::
+#TAROLO="/etc/voli/smart"
+TAROLO="/var/lib/voli"
+KIVETELEK=/etc/voli/smart_kivetelek
+#:::::: Beallitasok :::::::::::
+HDDK=$( ls /dev/sd[a-x]|sed 's/.*\///g;' )	#Ezekről készít 
+#HDDK="sda sdb sdc sdd sde "
+#:::::: Fuggvenyek ::::::::::::
+AlapErtekFelvetel(){
+	[ -d ${TAROLO} ] || mkdir ${TAROLO}
+	for a in ${HDDK} ; do
+		if [ ! -b /dev/${a} ]; then continue; fi
+		echo $a
+		smartctl --all "/dev/${a}"	>${TAROLO}/${a}
+		if [ "$?" != "0" ]; then
+			smartctl --all "/dev/${a}"
+			echo "Visszatérési érték hiba: $?"
+##			rm ${TAROLO}/${a}
+		fi
+	done
+}
+
+VegeVag(){
+sed -e 's/- \+[0-9]\+.*$//g; s/ \+$//g; '
+}
+
+Start(){
+	for a in ${HDDK} ; do
+		if [ ! -b /dev/${a} ];		then continue; fi
+		if [ ! -e ${TAROLO}/${a} ];	then continue; fi
+
+		ModelNev=$( smartctl -a /dev/${a}|grep "^Device Model:"|sed 's/.*: //g; s/^ \+//g; ' )
+
+		echo "----------------- ${a} --> ${ModelNev}	------------------"
+		smartctl --all "/dev/${a}"	|VegeVag	>/tmp/${a}$$
+		if [ "$?" != "0" ]; then
+			smartctl --all /dev/${a}
+			rm /tmp/${a}$$
+			continue
+		fi
+		cat ${TAROLO}/${a}	|VegeVag	>/tmp/${a}_$$
+
+		diff "/tmp/${a}_$$" "/tmp/${a}$$"	|grep -v -f "${KIVETELEK}" -e "^[0-9]\+c[0-9]\+$"
+
+		rm /tmp/${a}$$ /tmp/${a}_$$
+	done
+}
+
+
+#:::::::: Start :::::::::::::::
+#===============================================================================
+PATH=$PATH:/sbin:/usr/sbin:/bin:/usr/bin
+
+[ ! -d ${TAROLO} ] && mkdir -p ${TAROLO}
+
+
+case "$1" in
+	alap)
+		AlapErtekFelvetel
+	;;
+	*)
+		Start
+	;;
+esac
+
+exit 0

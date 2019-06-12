@@ -1,0 +1,18 @@
+## Ezekkel a sorokkal nem fog foglalkozni az összehasonlításkor
+
+smartctl 6.5 2016-01-24 r4214
+---
+User Capacity:
+Local Time is:
+#3 Spin_Up_Time
+#4 Start_Stop_Count
+9 Power_On_Hours
+189 Airflow_Temperature_Cel
+#190 Airflow_Temperature_Cel
+#193 Load_Cycle_Count
+194 Temperature_Celsius
+#195 ECC_Uncorr_Error_Count
+#201 Unc_Soft_Read_Err_Rate
+#204 Soft_ECC_Correct_Rate
+##244 Unknown_Attribute
+#[0-9a-f]\+$
