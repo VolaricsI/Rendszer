@@ -44,8 +44,18 @@ systemd-analyze verify default.target |perl -lne 'print $1 if m{Found.*?on\s+([^
 		A Felhasználó tudja élesíteni ( systemctl --user status voli-fetchmail-user.service )
 		és így nem tud még véletlen sem más felhasználóba turkálni..
 
-##	voli-fetchmail@.service
+##	voli-fetchmail@
 		A %i felhasználóra indít egy fetchmail-t
 
 ##	voli-fetchmail-starter
 		Elindít minden felhasználónak egy voli-fetchmail@.service-t akinek van a $HOME könyvtárában .fetchmailrc file
+
+
+##	voli-docker@
+		Az /etc/voli/docker könyvtárban lévő %i.yaml file-t indítja/állítja docker-compose-zal
+
+##	voli-docker-starter.service
+		Az /etc/voli/docker könyvtárban lévő összes .yaml-re indít egy voli-docker@.service
+
+
+

@@ -1,0 +1,16 @@
+#By Voli
+[Unit]
+Description=Docker kontener: %i, by Voli
+
+After   =docker.service local-fs.target network.target
+Requires=docker.service local-fs.target network.target
+
+[Service]
+Type=oneshot
+RemainAfterExit=yes
+SyslogIdentifier=%N
+
+WorkingDirectory=/etc/voli/docker
+
+ExecStart=/usr/bin/docker-compose --no-ansi -f %i.yaml up -d --no-color
+ExecStop =/usr/bin/docker-compose --no-ansi -f %i.yaml down
