@@ -1,6 +1,7 @@
 # systemd-init
 	Az álltalam készített systemd alatt működő szolgáltatásaim és azok kezelése.
-	Azét van "voli-" előtag, hogy még véletlenül se keveredjenek az alap service-kel és egy helyen legyenek.
+	Azért van "voli-" előtag, hogy még véletlenül se keveredjenek az alap service-kel 
+	és egy helyen legyenek.
 
 ##	Beallito
 		Egységes script segítségével: 
@@ -19,7 +20,7 @@ systemd-analyze verify default.target |perl -lne 'print $1 if m{Found.*?on\s+([^
 		A mythtv-backend service-nek kell a mysql service
 
 ##	edit-docker.service.sh
-		A docker.service-nek kell hogy a /var/lib/docker egy csatolási pont legyen,
+		A docker.service-nek jobb ha a /var/lib/docker egy csatolási pont,
 		így minden adata külön volume-ra kerül
 
 ##	edit-voli-openvpn.sh
@@ -35,17 +36,17 @@ systemd-analyze verify default.target |perl -lne 'print $1 if m{Found.*?on\s+([^
 		Induláskor ezeket kell beállítani
 
 ##	voli-openvpn-starter.service
-		Minden OpenVPN configra indít egy service-t, a gyári Unit-ot amiben modosítottam:
+		Minden OpenVPN configra indít egy service-t, a gyári Unit-ot így modosítottam:
 			[Service]
 			    RestartSec=30
 			    Restart=always
-		Illetve az voli-openvpn-edit script ezt végleg legyártja
+		Illetve az edit-voli-openvpn script ezt végleg megcsinálja
 
 ##	voli-fetchmail-user.service
 		A Felhasználó tudja élesíteni ( systemctl --user status voli-fetchmail-user.service )
 		és így nem tud még véletlen sem más felhasználóba turkálni..
 
-##	voli-fetchmail@
+##	voli-fetchmail@%i
 		A %i felhasználóra indít egy fetchmail-t
 
 ##	voli-fetchmail-starter
