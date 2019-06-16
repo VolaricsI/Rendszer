@@ -1,0 +1,50 @@
+# Description:		A forgalom szabályozás paraméterezése
+
+# Author: Volarics István <volaricsi@freemail.hu>
+#	Create by Voli
+
+DEV=eth0 			## A fizikai interface amin a forgalom kimegy
+QLEN=100 			## A sor hossza
+MTU=1400 			## MTU méret (1400) így bizton kifér
+
+    ## A $DEV csatolón kimenő  forgalmat 5 csőbe tereljük:
+	## 10: 	IP stack számára fontos (rendszerkritikus)
+	## 20: 	Adminisztárióra + alapértelmezett
+	## 30: 	Fontos az interectivitás, pl. WWW, TeamSpeak
+	## 40: 	Nem kritikus, mindenki más előbbre való; ftp, resilio, syncthink
+	## 50: 	Nem fontos, csak akkor menjen ha más nem
+
+###################	Minden Mbit-be kell; feltöltési limitek
+RATE_UP_MAX=100 		# Max. ennyi lehet a feltöltés 		Mbit/s
+RATE_UP_GARANTALT=40		# Ennyi a garantált feltöltés 		Mbit/s
+
+RATE_40_MAX=38.0 		# Max ennyit kaphat csak 	Mbit/s
+RATE_50_MAX=27.0 		# Max ennyit kaphat csak 	Mbit/s
+
+
+    ## A lokálisra (nem forward-oltra) érkezettek portszámai
+PORTS_10=" 122 " 				# ssh
+PORTS_20=" 8888,8384 " 				# Adminisztrációk
+PORTS_30=" http,https "				# WEB
+PORTS_40=""
+PORTS_50=""
+
+    ## Az app(ok) ezen user(ek) nevében fut(nak); lehet név és ID is
+USER_20=""
+USER_30=" ts3srv "
+USER_40=" rslsync ftp "
+USER_50=" 2002 "
+
+
+    ## A forward (docker container) kezelése
+FWD_AdmPorts_Sor=20						## A ${FWD_XX_AdmPorts} forgalma ebbe a sorba kerül
+
+FWD_20_List=""
+FWD_20_AdmPorts=""
+FWD_30_List=" vpn_mail vpn_munin "
+FWD_30_AdmPorts=""
+FWD_40_List=" docker_nc0 "
+FWD_40_AdmPorts=""
+FWD_50_List=" docker0 "
+FWD_50_AdmPorts="58846,80"
+

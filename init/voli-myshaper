@@ -1,0 +1,173 @@
+#!/bin/bash
+# Description:		A forgalom szabályozást valósít meg
+
+# Author: Volarics István <volaricsi@freemail.hu>
+#	Create by Voli
+
+#:::::: Beallitasok :::::::::::
+
+		## Itt töltöm be a paramétereket ami alapján működünk
+if [ -e	/etc/voli/voli-myshaper.conf ]; then
+    . 	/etc/voli/voli-myshaper.conf
+else
+	echo Nincs konfig file!!!!!
+	exit 1
+fi
+
+    [ ! -z "${FWD_20_List1}${FWD_30_List}${FWD_40_List}${FWD_50_List}" ] && FWD_Van=Igen 	## Van a forward-ra igény
+
+
+#:::::: Fix Beallitasok :::::::::::
+CLASS_SPEED_VIEW_HELYE=/sys/module/sch_htb/parameters/htb_rate_est
+SH_OUT=MYSHAPER-OUT						##Tábla amit a locális forgalomra használok
+SH_FWD=MYSHAPER-FWD						##Tábla az átmenő forgalomra
+
+# Hogy legyen egy gyors (MS) elérhetősége
+[ -L /usr/local/bin/MS ] || ln -s $( readlink -f $0 ) /usr/local/bin/MS
+
+#:::::::: functions :::::::::::
+
+function Status(){
+#Ember közelibb megjelenítés miatt szűrögetem
+#	echo "[qdisc]" ;	tc -s qdisc show dev ${DEV}
+#	echo "[class]" ;	tc -s class show dev ${DEV}
+	Tmp=$( tc -s class show dev ${DEV} )
+	echo ${Tmp}|sed 's/class/\nclass/g;'|grep "."	|grep "class htb"	\
+	|sed 's/[0-9]\+pps.*//g; s/Sent.*pkt //g; s/burst.*b //g'		\
+	|sed 's/leaf [0-9]\+://g; s/prio [0-9]\+//g; s/1:1 /1:01 /g'		\
+	|sed 's/(.*)//g; s/ \+/ /g'						\
+	|sed 's/\([0-9]\)\([0-9]\{3\}bit\)/\1kbit/g; s/\([0-9]\)\([0-9]\{3\}kbit\)/\1Mbit/g;'	\
+	|sort
+#	echo "[filter]" ; 	tc -s filter show dev ${DEV}
+        echo "[iptables]"
+#	iptables -t mangle -L POSTROUTING
+#	iptables -t mangle -L ${SH_OUT} -v -n
+#	iptables -t mangle -L ${SH_FWD} -v -n
+#	echo ">>>>>>>>>"
+
+	iptables -t mangle -L ${SH_OUT} -v -n 	|grep -v "destination" 	|sed 's/MARK.*match 0x0//g; s/\/\*/\t\t\/\*/g; s/MARK set/\t/g; '
+	iptables -t mangle -L ${SH_FWD} -v -n 	|grep -v "destination" 	|sed 's/MARK.*--//g; s/\*.*\/\*/\t\/\*/g; s/MARK set/\t/g; '
+
+} #End Status()
+
+function Iptables_Clean(){
+	iptables -t mangle -D POSTROUTING -o ${DEV} -j ${SH_OUT} 	2>/dev/null 	## Kimenő tábla törlése
+	iptables -t mangle -F ${SH_OUT} 				2>/dev/null
+	iptables -t mangle -X ${SH_OUT} 				2>/dev/null
+
+	iptables -t mangle -D FORWARD     -o ${DEV} -j ${SH_FWD} 	2>/dev/null 	## Átmenő tábla törlése
+	iptables -t mangle -F ${SH_FWD} 				2>/dev/null
+	iptables -t mangle -X ${SH_FWD} 				2>/dev/null
+}
+
+function Iptables_Set(){
+	Iptables_Clean
+
+	iptables -t mangle -N ${SH_OUT}
+	iptables -t mangle -I POSTROUTING -o ${DEV} -j ${SH_OUT}
+	IptablesMark="iptables -t mangle -A ${SH_OUT} -m mark --mark 0 " 		## Csak azt lehet megjelölni ami még nincs megjelölve
+
+	${IptablesMark} -p icmp 		-j MARK --set-mark 10 	-m comment --comment "ICMP (ping)      "
+	${IptablesMark} -p udp --dport domain 	-j MARK --set-mark 10 	-m comment --comment "(DNS)             "
+	${IptablesMark} -m length --length :64 	-j MARK --set-mark 10 	-m comment --comment "small packets (ACK)"
+
+	for sor in 10 20 30 40 50 ; do 									## Az adott portokra
+	    PORTS_List=PORTS_${sor}; 	if [ ".${!PORTS_List}" == "." ]; then continue; fi 		## Ha nincs port lista akkor nincs mit beállítani
+	    ${IptablesMark} -p tcp -m multiport --sport ${!PORTS_List} 	-j MARK --set-mark ${sor} -m comment --comment "tcp"
+	    ${IptablesMark} -p udp -m multiport --sport ${!PORTS_List} 	-j MARK --set-mark ${sor} -m comment --comment "udp"
+	done
+
+	for sor in 20 30 40 50 ; do 									## Az adott user nevében futó alkalmazások
+	    UserList=USER_${sor}; 	if [ ".${!UserList}" == "." ]; then continue; fi 		## Ha nincs USER akkor nincs mit beállítani
+	    for user in ${!UserList} ; do
+		${IptablesMark} -m owner --uid-owner ${user} 		-j MARK --set-mark ${sor} -m comment --comment "user: $user"
+	    done
+	done
+
+	${IptablesMark} -j MARK --set-mark 20 -m comment --comment "redundant: any unmarked packets"
+
+
+    if [ ".${FWD_Van}" != ".Igen" ]; then return; fi 				## Mivel ezek a FORWARD-hoz tartoznak így már mark-olva kerülnek át  a(z) ${SH_OUT} (fentebb) részre
+
+	iptables -t mangle -N ${SH_FWD}
+	iptables -t mangle -I FORWARD -o ${DEV} -j ${SH_FWD}
+	IptablesMarkFWD="iptables -t mangle -A ${SH_FWD} -m mark --mark 0 "	## Csak azt lehet megjelölni ami még nincs megjelölve
+
+	${IptablesMarkFWD} -p icmp 			-j MARK --set-mark 10 	-m comment --comment "ICMP (ping)        "
+	${IptablesMarkFWD} -p udp --dport domain 	-j MARK --set-mark 10 	-m comment --comment "(DNS)              "
+	${IptablesMarkFWD} -m length --length :64 	-j MARK --set-mark 10 	-m comment --comment "small packets (ACK)"
+
+	for sor in 20 30 40 50 ; do 								## Minden csőre megnézem a beállításokat
+	    DevList=FWD_${sor}_List; 	if [ ".${!DevList}" == "." ]; then continue; fi 	## Ha nincs DEV (amin érkezik) akkor nincs mit beállítani
+	    PortList=FWD_${sor}_AdmPorts
+	    for dev in ${!DevList} ; do
+		[ ! -z ${!PortList} ] && \
+			${IptablesMarkFWD} -i ${dev} -p tcp -m multiport --sport ${!PortList} 	-j MARK --set-mark ${FWD_AdmPorts_Sor} 	-m comment --comment "Adminisztráció"
+		${IptablesMarkFWD} -i ${dev} 	-m length --length :128 			-j MARK --set-mark $[${sor}-10] 	-m comment --comment "apro packets  "
+		${IptablesMarkFWD} -i ${dev} 							-j MARK --set-mark ${sor} 		-m comment --comment "data          "
+	    done
+	done
+
+	${IptablesMarkFWD} 	-j MARK --set-mark 20 	-m comment --comment "redundant: any unmarked packets"
+
+} #Iptable_set()
+
+
+function tc_Clean(){							# Minden class,filter,qdisc törölve és alap állapotba hozva
+	ip link  set dev ${DEV} qlen ${QLEN} mtu ${MTU}
+	tc qdisc del dev ${DEV} root 			2>/dev/null		# Reset everything to a known state (cleared); 
+	tc qdisc del dev ${DEV} ingress 		2>/dev/null		# Mindent törlök és elnyomom a hibaüzeneteket dupla stop esetére
+}
+
+function tc_Set(){
+	tc_Clean
+
+		# A htb class csak akkor írja ki az AKTUÁLIS sebességeket ha bekapcsolod a ${CLASS_SPEED_VIEW_HELYE}-nél;
+		# Csak akkor lehet bekapcsolni, ha a modul be van töltve, és a felhuzandó class elött kell bekapcsolni
+	modprobe sch_htb
+	echo 1 >>${CLASS_SPEED_VIEW_HELYE}
+	tc qdisc add dev ${DEV} root handle 1: htb default 20 				# A root qdisc legyen egy htb class - lecserélem a pfifo_fast-ot
+
+		# A root (htb class-ra) felépítem a szabályzó fa struktúrát
+		# brust 15k az induló kapcsolat kap ennyi extra adatmennyiséget
+		# rate: %-os értékkel kell beállítani (pl. 50,25,10,10,05), mert az összegük nem lehet több mint a szolgáltató álltal garantált (RATE_UP_GARANTALT) sávszélesség
+	tc class add dev ${DEV} parent 1:  classid 1:1 	htb 		rate ${RATE_UP_MAX}Mbit burst 15k
+	tc class add dev ${DEV} parent 1:1 classid 1:10 htb prio 1 	rate $((50*${RATE_UP_GARANTALT}*10))kbit 	ceil ${RATE_UP_MAX}Mbit
+	tc class add dev ${DEV} parent 1:1 classid 1:20 htb prio 2 	rate $((25*${RATE_UP_GARANTALT}*10))kbit 	ceil ${RATE_UP_MAX}Mbit
+	tc class add dev ${DEV} parent 1:1 classid 1:30 htb prio 3 	rate $((10*${RATE_UP_GARANTALT}*10))kbit 	ceil ${RATE_UP_MAX}Mbit
+	tc class add dev ${DEV} parent 1:1 classid 1:40 htb prio 4 	rate $((10*${RATE_UP_GARANTALT}*10))kbit 	ceil ${RATE_40_MAX}Mbit
+	tc class add dev ${DEV} parent 1:1 classid 1:50 htb prio 5 	rate $((05*${RATE_UP_GARANTALT}*10))kbit 	ceil ${RATE_50_MAX}Mbit
+
+		# Minden class-nak kell egy qdisc, a handle legyen egyedi!!?!??!, de valamiért pl. az 50-es sfq alatt megjelenek kicsi sfq-k de sok!!!!
+		# ezért visszatértem a pfifo_fast-ra; 2019-06 talán már nem kell, nem sikerült....
+	for sor in 10 20 30 40 50 ; do
+#		tc qdisc add dev ${DEV} parent 1:${sor} handle ${sor}: sfq perturb ${sor}
+		tc qdisc add dev ${DEV} parent 1:${sor} handle ${sor}: pfifo_fast
+	done
+
+		# A filterek teszik be a meg-MARK-olt csomagokat a megfelelő class-be; handle: ilyen cimkével ellátott, flowid: ebbe a class-ba tedd bele
+	for sor in 10 20 30 40 50 ; do
+		tc filter add dev ${DEV} parent 1:  prio 1 protocol ip handle ${sor} fw flowid 1:${sor}
+	done
+
+	echo "Outbound shaping added to ${DEV}.  Rate: ${RATE_UP_MAX}/${RATE_UP_GARANTALT} Mbit/sec."
+
+	########## downlink #############
+	#SZVSZ nem kell mert korlátozza/kozátozhatja a letöltést, főleg a filter
+	#tc qdisc  add dev ${DEV} handle ffff: ingress
+	#tc filter add dev ${DEV} parent ffff: protocol ip prio 50 u32 match ip src 0.0.0.0/0 police rate ${RATE_DOWN}Mbit burst 10k drop flowid :1
+	#echo "Inbound  shaping added to ${DEV}.  Rate: ${RATE_DOWN} Mbit/sec."
+} #End tc_Set()
+
+
+#:::::::: Start :::::::::::::::
+case "$1" in
+	start|restart) 	tc_Set
+			Iptables_Set
+	;;
+	stop)		Iptables_Clean
+			tc_Clean
+	;;
+	*|status) 	Status
+esac
+exit 0

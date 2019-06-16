@@ -1,0 +1,19 @@
+#By Voli
+[Unit]
+Description=A forgalom korlátozást valósítja meg (feltöltés)  by Voli
+
+After=local-fs.target network.target
+
+
+[Service]
+Type=oneshot
+Restart=no
+RemainAfterExit=yes
+
+
+ExecStart=/etc/voli/init/voli-myshaper start
+ExecStop= /etc/voli/init/voli-myshaper stop
+
+
+[Install]
+WantedBy=multi-user.target

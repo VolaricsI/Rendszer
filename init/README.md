@@ -59,4 +59,6 @@ systemd-analyze verify default.target |perl -lne 'print $1 if m{Found.*?on\s+([^
 		Az /etc/voli/docker könyvtárban lévő összes .yaml-re indít egy voli-docker@.service
 
 
+##	voli-myshaper,voli-myshaper.service
+		A forgalom korlátozást valósítja meg az internet felé
 
