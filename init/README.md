@@ -26,6 +26,11 @@ systemd-analyze verify default.target |perl -lne 'print $1 if m{Found.*?on\s+([^
 ##	edit-voli-openvpn.sh
 		Az openvpn@service mindíg induljon újra
 
+##	*-starter
+		Autómatán indítja a * service-ket megfelelő névvel, ezt lehet helyetesíteni symlink-kel pl.:
+		ln -s /etc/systemd/system/voli-fetchmail@.service /etc/systemd/system/default.target.wants/voli-fetchmail@<usernev>.service
+
+
 ##	voli-mythtv-switch.service
 		A MythTV fronted-jét (megjelenítő/TV)  ki/be kapcsolgatja, jellemzően a távirányító használja
 
