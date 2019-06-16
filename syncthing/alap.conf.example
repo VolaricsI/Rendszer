@@ -1,0 +1,18 @@
+USER=username
+GROUP=usergroup
+
+###		#	Itt lesz minden adat állománya
+HOME=/home/username
+
+###		#	Azon csatolási pontok melyek kellenek a futásához
+CSATOLASOK="/srv /home "
+
+###		#			Az átadandó paraméterek:
+###		#	Az adatbázisának helye, ez fontos hiánya esetén a "WorkingDirectory"-ban lesz
+Param0=" -home=${HOME} "
+
+###		#	további paraméter lehet; pl.
+#	;Beszédes üzemmód
+###	Param=" -verbose "
+#Csak a használt könyvtárakat írja ki és nem indul el!!!!
+##	Param=" -paths "

@@ -1,0 +1,64 @@
+#By Voli
+[Unit]
+Description=SyncThing by Voli, service for %i
+
+After=local-fs.target network.target
+
+ConditionPathExists=/etc/voli/syncthing/%i.conf
+
+
+[Service]
+Type=simple
+SyslogIdentifier=%N
+
+TimeoutStopSec=30
+
+Restart=always
+RestartSec=30
+
+UMask=0007
+WorkingDirectory=/tmp
+
+EnvironmentFile=/etc/voli/syncthing/%i.conf
+
+Environment=DAEMON_NAME_UJ=syncthing-%i
+Environment=DAEMON_PRG=${HOME}/${DAEMON_NAME_UJ}
+
+
+ExecStartPre=/bin/bash -c " [ -d ${HOME} ] && chown -R ${USER}:${GROUP} ${HOME}; 		\
+			    [ -e ${DAEMON_PRG} ] && rm ${DAEMON_PRG}; 				\
+			    ln -s /usr/bin/syncthing ${DAEMON_PRG}; 				\
+			    for a in ${CSATOLASOK}; do 						\
+				mountpoint -q $a || ( echo Hiányzó csatolás: $a; exit 24; ); 	\
+			    done; "
+
+
+ExecStart=/bin/bash    -c "/usr/bin/chpst -u ${USER} -U ${USER} ${DAEMON_PRG} -logfile=- -logflags=0 -no-restart -no-browser ${Param0} ${Param} "
+
+ExecStopPost=/bin/bash -c "/usr/bin/chpst -u ${USER} -U ${USER} /usr/bin/killall ${DAEMON_NAME_UJ} || exit 0; "
+
+
+#[Install]
+#WantedBy=multi-user.target
+
+###------------- Mi kell az /etc/voli/syncthing/%i.conf file-ba ----------------------------------------------------------------------------
+###		#	Felhasználó és csoportja amivel majd futni fog
+###	USER=username
+###	GROUP=usergroup
+
+###		#	Itt tárolja a saját adattait
+###	HOME=/home/V1/syncthing-alap
+###		#	Azon csatolási pontok melyek kellenek a futásához
+###	CSATOLASOK="/srv /home "
+
+###		#			Az átadandó paraméterek:
+###		#	Az adatbázisának helye, ez fontos hiánya esetén a "${HOME}/.config/syncthing"-ben lesz; ha nincs %HOME% akkor nem fut
+###	Param0=" -home=${HOME_DIR} "
+
+###		#	további paraméter lehet; pl.
+#	;Beszédes üzemmód
+###	Param=" -verbose "
+#CSak a használt könyvtárakat írja ki és nem indul el!!!!
+##	Param=" -paths "
+##	Param=" -verbose  -paths "
+##----------------------------------------------------------------------------------------------------------------------------------------------

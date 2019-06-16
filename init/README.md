@@ -21,7 +21,7 @@ systemd-analyze verify default.target |perl -lne 'print $1 if m{Found.*?on\s+([^
 
 ##	edit-docker.service.sh
 		A docker.service-nek jobb ha a /var/lib/docker egy csatolási pont,
-		így minden adata külön volume-ra kerül
+		így minden adata külön volume-ra kerülhet
 
 ##	edit-voli-openvpn.sh
 		Az openvpn@service mindíg induljon újra
@@ -40,6 +40,9 @@ systemd-analyze verify default.target |perl -lne 'print $1 if m{Found.*?on\s+([^
 ##	voli-rc, voli-rc.service
 		Induláskor ezeket kell beállítani
 
+##	voli-myshaper,voli-myshaper.service
+		A forgalom korlátozást valósítja meg az internet felé
+
 ##	voli-openvpn-starter.service
 		Minden OpenVPN configra indít egy service-t, a gyári Unit-ot így modosítottam:
 			[Service]
@@ -47,24 +50,18 @@ systemd-analyze verify default.target |perl -lne 'print $1 if m{Found.*?on\s+([^
 			    Restart=always
 		Illetve az edit-voli-openvpn script ezt végleg megcsinálja
 
-##	voli-fetchmail-user.service
-		A Felhasználó tudja élesíteni ( systemctl --user status voli-fetchmail-user.service )
-		és így nem tud még véletlen sem más felhasználóba turkálni..
-
 ##	voli-fetchmail@%i
 		A %i felhasználóra indít egy fetchmail-t
-
 ##	voli-fetchmail-starter
 		Elindít minden felhasználónak egy voli-fetchmail@.service-t akinek van a $HOME könyvtárában .fetchmailrc file
 
-
 ##	voli-docker@
 		Az /etc/voli/docker könyvtárban lévő %i.yaml file-t indítja/állítja docker-compose-zal
-
 ##	voli-docker-starter.service
 		Az /etc/voli/docker könyvtárban lévő összes .yaml-re indít egy voli-docker@.service
 
 
-##	voli-myshaper,voli-myshaper.service
-		A forgalom korlátozást valósítja meg az internet felé
-
+##	voli-syncthing@.service
+		Az /etc/voli-syncthing -ben található konfig a paramétere
+##	voli-syncthing-starter.service
+		Minden az /etc/voli-syncthing -ben található configra indít egy voli-syncthing@.service-t
