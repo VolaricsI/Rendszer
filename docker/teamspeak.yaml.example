@@ -1,0 +1,25 @@
+version: '2.1'
+
+services:
+
+  TeamSpeak:
+    container_name: teamspeak
+    image: teamspeak
+    restart: always
+
+    # ts3srv user
+    user: 2001:2001
+
+    ports:
+      - 9987:9987/udp
+      - 10011:10011
+      - 30033:30033
+
+
+    volumes:
+      - /srv/ts3srv/:/var/ts3server/
+
+    environment:
+      TS3SERVER_LICENSE: accept
+
+    network_mode: host
