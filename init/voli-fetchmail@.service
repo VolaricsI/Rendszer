@@ -10,6 +10,10 @@ SyslogIdentifier=%N
 
 User=%i
 
+	## Hiányzó config file miatt állt le
+RestartPreventExitStatus= 5
+
+
 ExecStart=/usr/bin/fetchmail --nodetach --nosyslog  -f ${HOME}/.fetchmailrc
 
 ExecStop =/bin/bash -c "/usr/bin/fetchmail --quit || /bin/true "		## Biztosítéknak és MINDÍG legyen igaz....
