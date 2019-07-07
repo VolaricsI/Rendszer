@@ -13,7 +13,11 @@ S_munin=address
 
 cat ${VPN_FILE_IP}|sed 's/,.\+$//g;'|while read a; do
 
-    Ip_Current=$( cat ${VPN_FILE_STATUS}|grep "${S_routeing}"|grep "${a}"|sed "s/^.*${a},[0-9.:]\+,//g; s/,.*$//g; ")
+#	Ez verzio 2-esre készült
+#    Ip_Current=$( cat ${VPN_FILE_STATUS}|grep "${S_routeing}"|grep "${a}"|sed "s/^.*${a},[0-9.:]\+,//g; s/,.*$//g; ")
+
+#	Ez verzio 3-asra készült
+    Ip_Current=$( cat ${VPN_FILE_STATUS}|grep "${S_routeing}"|grep "${a}"|sed "s/^.*${a}//; s/^\t[0-9.:]\+\t//; s/\t.*$//;" )
 
     Ip_munin=$( [ -r ${MUNIN_DIR}/${a}.conf ] && cat ${MUNIN_DIR}/${a}.conf|grep "${S_munin}"|sed "s/.*${S_munin}//g; s/[ \t]\+//g; " )
 
