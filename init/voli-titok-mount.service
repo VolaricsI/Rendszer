@@ -1,0 +1,21 @@
+[Unit]
+Description=Titkosított csatolási pont kezelése by Voli
+
+After   =voli-titok-lvm.service
+Requires=voli-titok-lvm.service
+
+[Service]
+Type=oneshot
+RemainAfterExit=yes
+
+	## A fel/le csatolások sok időbe telhetnek... (10TB több mint 90 sec)
+TimeoutSec=180sec
+
+EnvironmentFile=/etc/voli/voli-titok.env
+
+	## Az /etc/fstab-ban kell megadni a csatolás mikéntjét
+ExecStart=/bin/mount  	${MountPoint}
+ExecStop =/bin/umount 	${MountPoint}
+
+## Ellenőrzésre a log-ba; mert ha van akkor timeout-ra futott a lecsatolás
+ExecStopPost=/bin/df -h -t btrfs

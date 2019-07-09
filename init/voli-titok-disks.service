@@ -1,0 +1,22 @@
+[Unit]
+Description=Titkositott diszkek kezelése by Voli
+
+After   =local-fs.target cryptsetup.target
+Requires=local-fs.target cryptsetup.target
+
+
+[Service]
+Type=oneshot
+RemainAfterExit=yes
+
+ExecStart =/bin/sh -c "	for t in $( grep -v -e "none" -e "^#" /etc/crypttab |grep "luks,noauto"|grep "Titok_" |sed 's/[ \t].*//g' ) ; do \
+			    cryptdisks_start $t ; 			\
+			    Ret=$?; [ $Ret -ne 0 ] && exit $Ret; 	\
+			done ; 	\
+			exit 0 	"
+
+ExecStop =/bin/sh -c "	for t in $( grep -v -e "none" -e "^#" /etc/crypttab |grep "luks,noauto"|grep "Titok_" |sed 's/[ \t].*//g' ) ; do \
+			    cryptdisks_stop $t ; 			\
+			    Ret=$?; [ $Ret -ne 0 ] && exit $Ret; 	\
+			done ; 	\
+			exit 0 	"

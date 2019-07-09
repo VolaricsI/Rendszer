@@ -65,3 +65,34 @@ systemd-analyze verify default.target |perl -lne 'print $1 if m{Found.*?on\s+([^
 		Az /etc/voli-syncthing -ben található konfig a paramétere
 ##	voli-syncthing-starter.service
 		Minden az /etc/voli-syncthing -ben található configra indít egy voli-syncthing@.service-t
+
+
+##	Voli-titok-[disk|lvm|mount] 
+
+	Megnyitja a titkosított diszeket, összerakja a rajtuk lévő LVM-et, majd csatolja
+
+	Feltételek:
+	    /etc/cypttab kitöltve: pl. akár több soron átt; komment lehet (^#); noauto kell, mivel bootkor még nincs kulcs
+		és "Titok_" kell kezdeni a <target name>-t
+		# <target name>			<source device>		<key file>				<options>
+		Titok_Diszk_Így_lesz_Nevezve 	UUID=A_Diszk_UUID-je 	A_kulcs_helye_ami_nyitja_a_diszket 	luks,noauto
+		Titok_Diszk_Így_lesz_NevezveX 	UUID=A_Diszk_UUID-jeX 	A_kulcs_helye_ami_nyitja_a_diszketX 	luks,noauto
+
+	    /etc/fstab a csatolásoknak itt kellelennie pl.
+		/dev/vgtitok/titkok 	/srv/titkos 	btrfs 	noauto,nodev,nosuid,noexec,subvol=/titkom 	0 	7
+
+	    /etc/voli/titok.env itt vannak a paraméterek
+
+##	voli-titok-disk
+	    Az /etc/crypttab -ban lévő összes "noauto" és kulcsfile-al (nem none, ami jelszavas lenne) rendelkező
+	    diszket indítja/állítja
+
+##	voli-titok-lvm
+	    Megkeresi és (de)aktiválja az LVM köteteket és VG-ket
+
+	voli-titok-mount
+	    (Le)Csatolja a titkosított diszkeken lévő filesystemeket
+
+
+
+
