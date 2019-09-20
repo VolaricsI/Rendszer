@@ -8,6 +8,7 @@ Requires=local-fs.target cryptsetup.target
 [Service]
 Type=oneshot
 RemainAfterExit=yes
+SyslogIdentifier=%N
 
 ExecStart =/bin/sh -c "	for t in $( grep -v -e "none" -e "^#" /etc/crypttab |grep "luks,noauto"|grep "Titok_" |sed 's/[ \t].*//g' ) ; do \
 			    cryptdisks_start $t ; 			\

@@ -7,6 +7,7 @@ Requires=voli-titok-lvm.service
 [Service]
 Type=oneshot
 RemainAfterExit=yes
+SyslogIdentifier=%N
 
 	## A fel/le csatolások sok időbe telhetnek... (10TB több mint 90 sec)
 TimeoutSec=180sec

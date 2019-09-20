@@ -7,8 +7,9 @@ Requires=voli-titok-disks.service
 [Service]
 Type=oneshot
 RemainAfterExit=yes
+SyslogIdentifier=%N
 
-EnvironmentFile=/etc/voli/voli-titok.env
+##EnvironmentFile=/etc/voli/voli-titok.env
 
 ExecStartPre=/sbin/vgscan
 ExecStartPre=/sbin/lvscan

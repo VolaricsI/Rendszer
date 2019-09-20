@@ -57,7 +57,11 @@ systemd-analyze verify default.target |perl -lne 'print $1 if m{Found.*?on\s+([^
 
 ##	voli-docker@
 		Az /etc/voli/docker könyvtárban lévő %i.yaml file-t indítja/állítja docker-compose-zal
-##	voli-docker-starter.service
+		A systemctl enable voli-docker@teszt.service 	Következő boot-nál már elindul...
+##	voli-docker-stop.service
+		Az /etc/voli/docker könyvtárban lévő minden *.yaml file-ra indít egy stop parancsot
+		    
+##	voli-docker-starter.service	ELAVULT
 		Az /etc/voli/docker könyvtárban lévő összes .yaml-re indít egy voli-docker@.service
 
 

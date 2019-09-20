@@ -2,8 +2,8 @@
 [Unit]
 Description=Docker kontener(ek): %i, by Voli
 
-After   =docker.service local-fs.target network.target
-Requires=docker.service local-fs.target network.target
+After   =docker.service local-fs.target network.target voli-docker-stop.service
+Requires=docker.service local-fs.target network.target voli-docker-stop.service
 
 [Service]
 Type=oneshot
