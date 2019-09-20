@@ -7,7 +7,7 @@
 # Author: Volarics István <volaricsi@freemail.hu>
 #	Create by Voli
 
-	RAID_Speed=200000			#RAID szinkronizáció max sebessége
+	RAID_Speed=20000000			#RAID szinkronizáció max sebessége
 	CPU_SPEED=ondemand			#CPU sebesség/power/orajel állítás módja
 
     echo -n "Lehetseges CPU sebesség állítási módok: "
