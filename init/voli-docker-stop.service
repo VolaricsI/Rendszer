@@ -16,8 +16,10 @@ WorkingDirectory=/etc/voli/docker
 
 ExecStart=/bin/true
 
-ExecStop=/bin/sh -c 'ls *.yaml 	|while read a; do echo docker-compose --no-ansi -f $a down; 	\
-						       docker-compose --no-ansi -f $a down; 	done; 	exit 0; '
+ExecStop=/bin/sh -c 'ls *.yaml 	|while read a; do echo 	docker-compose --no-ansi -f $a down; 	\
+							docker-compose --no-ansi -f $a down; 	\
+							echo Ret: $?.; 				\
+				done; 	exit 0; '
 
 
 [Install]
