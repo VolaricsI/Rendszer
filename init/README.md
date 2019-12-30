@@ -97,6 +97,3 @@ systemd-analyze verify default.target |perl -lne 'print $1 if m{Found.*?on\s+([^
 	voli-titok-mount
 	    (Le)Csatolja a titkosított diszkeken lévő filesystemeket
 
-
-
-
