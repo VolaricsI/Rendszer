@@ -126,7 +126,9 @@ function tc_Set(){
 		# Csak akkor lehet bekapcsolni, ha a modul be van töltve, és a felhuzandó class elött kell bekapcsolni
 	modprobe sch_htb
 	echo 1 >>${CLASS_SPEED_VIEW_HELYE}
-	tc qdisc add dev ${DEV} root handle 1: htb default 20 				# A root qdisc legyen egy htb class - lecserélem a pfifo_fast-ot
+
+		# A root qdisc legyen egy htb class - lecserélem a pfifo_fast-ot; r2q (default=10) emelni kell mert panaszkodik a log-ban
+	tc qdisc add dev ${DEV} root handle 1: htb default 20 r2q 20
 
 		# A root (htb class-ra) felépítem a szabályzó fa struktúrát
 		# brust 15k az induló kapcsolat kap ennyi extra adatmennyiséget
