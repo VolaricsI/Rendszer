@@ -1,18 +1,37 @@
 ## Ezekkel a sorokkal nem fog foglalkozni az összehasonlításkor
-
-smartctl 6.5 2016-01-24 r4214
----
+#
+^smartctl
+^Copyright
+^---$
+LU WWN Device Id:
 User Capacity:
 Local Time is:
-#3 Spin_Up_Time
-#4 Start_Stop_Count
-9 Power_On_Hours
-189 Airflow_Temperature_Cel
-#190 Airflow_Temperature_Cel
-#193 Load_Cycle_Count
-194 Temperature_Celsius
-#195 ECC_Uncorr_Error_Count
-#201 Unc_Soft_Read_Err_Rate
-#204 Soft_ECC_Correct_Rate
-##244 Unknown_Attribute
-#[0-9a-f]\+$
+###
+ data collection:
+ recommended polling time:
+###
+   4 Start_Stop_Count
+   9 Power_On_Hours
+  12 Power_Cycle_Count
+ 190 Airflow_Temperature_Cel
+ 192 Power-Off_Retract_Count
+ 194 Temperature_Celsius
+ 241 Total_LBAs_Written
+###
+### A diff technikai kiírásainak elrejtése
+^16c16
+^15c15
+^71c71
+^67c67
+###
+### NVME SSD (Intel)
+ Temperature:
+^14c14
+^49c49
+^43,47c43,47
+ Data Units Read:
+ Data Units Written:
+ Host Read Commands:
+ Host Write Commands:
+ Controller Busy Time:
+ Power On Hours:
