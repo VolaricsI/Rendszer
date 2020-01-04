@@ -27,7 +27,7 @@ Start(){
 		smartctl --all "/dev/${a}" >"${TAROLO}/${a}"
 		SmartExitCode=$?
 
-		ModelNev=$( grep -e "^Device Model:" "${TAROLO}/${a}" |sed 's/.*: //g; s/^ \+//g; ' )
+		ModelNev=$( grep -e "^Device Model:" -e "^Model Number:" "${TAROLO}/${a}" |sed 's/.*: //g; s/^ \+//g; ' )
 
 		echo "----------------- ${a} --> ${ModelNev}	------------------"
 		if [ $SmartExitCode -ne 0 ]; then
