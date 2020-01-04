@@ -7,6 +7,7 @@ KIVETELEK=/etc/voli/smart_kivetelek
 #:::::: Beallitasok :::::::::::
 Referencia=${TAROLO}/Alap_
 HDDK=$( ls /dev/sd[a-x]|sed 's/.*\///g;' )	#Ezekről készít
+HDDK=$( ls /dev/sd[a-x] /dev/nvme[0-9]n[0-9] |sed 's/.*\///g;' |sort) 	#Ezekről készít
 #:::::: Fuggvenyek ::::::::::::
 AlapErtekFelvetel(){
 	[ -d ${TAROLO} ] || mkdir -p ${TAROLO}
