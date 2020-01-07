@@ -6,7 +6,6 @@ TAROLO="/var/lib/voli"
 KIVETELEK=/etc/voli/smart_kivetelek
 #:::::: Beallitasok :::::::::::
 Referencia=${TAROLO}/Alap_
-HDDK=$( ls /dev/sd[a-x]|sed 's/.*\///g;' )	#Ezekről készít
 HDDK=$( ls /dev/sd[a-x] /dev/nvme[0-9]n[0-9] |sed 's/.*\///g;' |sort) 	#Ezekről készít
 #:::::: Fuggvenyek ::::::::::::
 AlapErtekFelvetel(){
@@ -23,13 +22,16 @@ AlapErtekFelvetel(){
 }
 
 Start(){
+		## Referencia idejét jó tudni!!
+	RefTime=$(  grep -e "Local Time is:" "${TAROLO}/sda" 	|sed 's/.*: //g; s/^ \+//g; ' )
+	date --date="$RefTime" "+=================> A referencia ideje: %Y.%m.%d. <================="
+
 	for a in ${HDDK} ; do
-		smartctl --all "/dev/${a}" >"${TAROLO}/${a}"
-		SmartExitCode=$?
+		smartctl --all "/dev/${a}" >"${TAROLO}/${a}" ; SmartExitCode=$?
 
 		ModelNev=$( grep -e "^Device Model:" -e "^Model Number:" "${TAROLO}/${a}" |sed 's/.*: //g; s/^ \+//g; ' )
+		echo "------------------ ${a} --> ${ModelNev} 	------------------"
 
-		echo "----------------- ${a} --> ${ModelNev}	------------------"
 		if [ $SmartExitCode -ne 0 ]; then
 		    echo "SmartExitCode: $SmartExitCode."
 		fi
