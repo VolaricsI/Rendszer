@@ -1,15 +1,21 @@
 ## Ezekkel a sorokkal nem fog foglalkozni az összehasonlításkor
 #
-^smartctl
-^Copyright
+### A diff technikai kiírásainak elrejtése
 ^---$
-LU WWN Device Id:
-User Capacity:
-Local Time is:
+^[0-9a-f]\+$
+^[0-9a-f]\+,[0-9a-f]\+,[0-9a-f]\+$
+#
+### A fejléc
+ Local Time is:
+#^smartctl
+#^Copyright
+#LU WWN Device Id:
+#User Capacity:
 ###
- data collection:
- recommended polling time:
-###
+# data collection:
+# recommended polling time:
+#
+### Pillanatnyi állapot jelzései
    4 Start_Stop_Count
    9 Power_On_Hours
   12 Power_Cycle_Count
@@ -17,18 +23,12 @@ Local Time is:
  192 Power-Off_Retract_Count
  194 Temperature_Celsius
  241 Total_LBAs_Written
-###
-### A diff technikai kiírásainak elrejtése
-^16c16
-^15c15
-^71c71
-^67c67
-###
+#
+### Változik a megitélés, de a raw érték jó
+7 Seek_Error_Rate .\+ 0$
+#
 ### NVME SSD (Intel)
  Temperature:
-^14c14
-^49c49
-^43,47c43,47
  Data Units Read:
  Data Units Written:
  Host Read Commands:
