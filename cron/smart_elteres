@@ -23,7 +23,7 @@ AlapErtekFelvetel(){
 
 Start(){
 		## Referencia idejét jó tudni!!
-	RefTime=$(  grep -e "Local Time is:" "${TAROLO}/sda" 	|sed 's/.*: //g; s/^ \+//g; ' )
+	RefTime=$(  grep -e "Local Time is:" "${Referencia}sda" 	|sed 's/.*: //g; s/^ \+//g; ' )
 	date --date="$RefTime" "+=================> A referencia ideje: %Y.%m.%d. <================="
 
 	for a in ${HDDK} ; do
