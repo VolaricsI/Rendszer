@@ -7,7 +7,6 @@
 # Author: Volarics István <volaricsi@freemail.hu>
 #	Create by Voli
 
-	RAID_Speed=20000000			#RAID szinkronizáció max sebessége
 	CPU_SPEED=ondemand			#CPU sebesség/power/orajel állítás módja
 
     echo -n "Lehetseges CPU sebesség állítási módok: "
@@ -20,10 +19,15 @@
 	i=$[ $i+1 ]
     done
 
-    echo ${RAID_Speed} >>/proc/sys/dev/raid/speed_limit_min
-    echo ${RAID_Speed} >>/proc/sys/dev/raid/speed_limit_max
-    echo -n "RAID: speed_limit_min: "; cat /proc/sys/dev/raid/speed_limit_min
-    echo -n "RAID: speed_limit_max: "; cat /proc/sys/dev/raid/speed_limit_max
-
 echo MythTV cache torles...
 rm -rf /home/mythtv/.mythtv/cache /home/mythtv/.cache
+
+
+    for dev in $( ls /dev/sd[a-x] ) ; do
+#	echo $dev
+#hdparm -B 254 -S 0 	$dev
+hdparm -B  -S 255 	$dev 	>/dev/null
+idle3ctl  -d 		$dev 	>/dev/null
+
+
+    done
