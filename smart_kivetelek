@@ -17,11 +17,13 @@ User Capacity:
 # recommended polling time:
 #
 ### Pillanatnyi állapot jelzései
+   3 Spin_Up_Time
    4 Start_Stop_Count
    9 Power_On_Hours
   12 Power_Cycle_Count
  190 Airflow_Temperature_Cel
  192 Power-Off_Retract_Count
+ 193 Load_Cycle_Count
  194 Temperature_Celsius
  241 Total_LBAs_Written
 #
