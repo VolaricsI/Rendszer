@@ -11,13 +11,13 @@ RemainAfterExit=yes
 SyslogIdentifier=%N
 
 ExecStart =/bin/sh -c "	for t in $( grep -v -e "none" -e "^#" /etc/crypttab |grep "luks,noauto"|grep "Titok_" |sed 's/[ \t].*//g' ) ; do \
+#echo			    systemctl start systemd-cryptsetup@$t ; 	\
 			    cryptdisks_start $t ; 			\
-			    Ret=$?; [ $Ret -ne 0 ] && exit $Ret; 	\
 			done ; 	\
 			exit 0 	"
 
 ExecStop =/bin/sh -c "	for t in $( grep -v -e "none" -e "^#" /etc/crypttab |grep "luks,noauto"|grep "Titok_" |sed 's/[ \t].*//g' ) ; do \
+#echo			    systemctl stop systemd-cryptsetup@$t ; 	\
 			    cryptdisks_stop $t ; 			\
-			    Ret=$?; [ $Ret -ne 0 ] && exit $Ret; 	\
 			done ; 	\
 			exit 0 	"
