@@ -18,5 +18,6 @@ EnvironmentFile=/etc/voli/voli-titok.env
 ExecStart=/bin/mount  	${MountPoint}
 ExecStop =/bin/umount 	${MountPoint}
 
-## Ellenőrzésre a log-ba; mert ha van akkor timeout-ra futott a lecsatolás
-ExecStopPost=/bin/df -h -t btrfs
+## Ellenőrzésre a log-ba; mert ha van akkor timeout-ra futott a le/felcsatolás
+ExecStopPost =/bin/df -h -t btrfs -t ext4
+ExecStartPost=/bin/df -h -t btrfs -t ext4
