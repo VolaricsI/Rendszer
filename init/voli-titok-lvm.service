@@ -12,7 +12,8 @@ SyslogIdentifier=%N
 EnvironmentFile=/etc/voli/voli-titok.env
 
 ExecStartPre=/sbin/vgscan
-ExecStart   =/sbin/lvscan
+ExecStartPre=/sbin/lvscan
+ExecStart   =/sbin/lvchange --activate y ${LogicalVolume}
 
 ExecStop    =/sbin/lvchange --activate n ${LogicalVolume}
 ExecStopPost=/sbin/vgchange --activate n ${VolumeGroupName}
