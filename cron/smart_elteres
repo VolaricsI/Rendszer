@@ -25,6 +25,16 @@ AlapErtekFelvetel(){
 	done
 }
 
+Teszt(){
+	for a in ${HDDK} ; do
+		if [ ! -b /dev/${a} ]; then continue; fi
+		echo $a
+		Result=$( smartctl --all "/dev/${a}" ); Ret=$?; 			# Így kell mert a smart resultja kell és nem a grep-é
+		echo "${Result}" |grep -e "Model Family:" -e "Device Model:" -e "^#" -e "Model Number:" -e "Serial Number:"
+		echo "Visszatérési érték: ${Ret}"
+	done
+}
+
 Start(){
 		## Referencia idejét jó tudni!!
 	for b in $ReferenciaLista ; do
@@ -46,9 +56,7 @@ Start(){
 			diff "${b}" "${TAROLO}/${a}" |grep -v -f "${KIVETELEK}"
 			break
 		done
-
 		[ $SmartExitCode -ne 0 ] && echo "SmartExitCode: $SmartExitCode."
-
 	done
 }
 
@@ -57,6 +65,9 @@ Start(){
 case "$1" in
 	alap)
 		AlapErtekFelvetel
+	;;
+	teszt)
+		Teszt
 	;;
 	*)
 		Start
