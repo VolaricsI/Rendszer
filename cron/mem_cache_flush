@@ -6,9 +6,19 @@
 #:::::: Beallitasok :::::::::::
 #:::::: Ellenorzesek ::::::::::
 
-swapoff -a
-swapon  -a
+swapoff -a ; swapon  -a
 
-sync
+sync --file-system
 
-echo 3 >/proc/sys/vm/drop_caches
+
+case $( date +%H ) in
+
+	02,05,08,11,14,17,20,23)
+		echo 2 >/proc/sys/vm/drop_caches
+	;;
+
+	00,03,06,09,12,15,18,21 )
+		echo 3 >/proc/sys/vm/drop_caches
+	;;
+
+esac
