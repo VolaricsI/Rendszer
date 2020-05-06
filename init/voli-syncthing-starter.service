@@ -9,7 +9,7 @@ ConditionPathExists=/etc/voli-env/syncthing/
 Type=oneshot
 SyslogIdentifier=%N
 
-WorkingDirectory=/etc/voli/syncthing/
+WorkingDirectory=/etc/voli-env/syncthing/
 
 ExecStart=/bin/bash -c ' ls|grep conf$ |sed "s/.conf$//g" |while read a; do 	\
 			    echo systemctl start voli-syncthing@$a.service; 	\
