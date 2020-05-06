@@ -3,32 +3,25 @@
 #	Create by Voli
 
 #:::::: Fix beallitasok :::::::
-VPN_FILE_IP=/etc/openvpn/1_munin-srv.ipp
-VPN_FILE_STATUS=/etc/openvpn/1_munin-srv.status
+VPN_STATUS_FILE=/etc/openvpn/1_munin-srv.status 	#	Ez verzio 3-asra készült
+
 #:::::: Beallitasok :::::::::::
 MUNIN_DIR=/etc/munin/munin-conf.d
 S_routeing="CLIENT_LIST"
 S_munin=address
 #:::::: Ellenorzesek ::::::::::
+cat ${VPN_STATUS_FILE} |grep "^CLIENT_LIST" |cut -d$'\t' -f 2,4 |while read a; do
+    Nev=$( echo "$a"|cut -d$'\t' -f 1 )
 
-cat ${VPN_FILE_IP}|sed 's/,.\+$//g;'|while read a; do
-
-#	Ez verzio 2-esre készült
-#    Ip_Current=$( cat ${VPN_FILE_STATUS}|grep "${S_routeing}"|grep "${a}"|sed "s/^.*${a},[0-9.:]\+,//g; s/,.*$//g; ")
-
-#	Ez verzio 3-asra készült
-    Ip_Current=$( cat ${VPN_FILE_STATUS}|grep "${S_routeing}"|grep "${a}"|sed "s/^.*${a}//; s/^\t[0-9.:]\+\t//; s/\t.*$//;" )
-
-    Ip_munin=$( [ -r ${MUNIN_DIR}/${a}.conf ] && cat ${MUNIN_DIR}/${a}.conf|grep "${S_munin}"|sed "s/.*${S_munin}//g; s/[ \t]\+//g; " )
+    Ip_Current=$( echo "$a"|cut -d$'\t' -f 2  )
+    Ip_munin=$( [ -r "${MUNIN_DIR}/${Nev}.conf" ] && grep -e "${S_munin}" "${MUNIN_DIR}/${Nev}.conf" |sed "s/.*${S_munin}//g; s/[ \t]\+//g; " )
 
 
     if [ "${Ip_Current}" = "${Ip_munin}" ] ; then
-#	echo -----${Ip_Current} = ${Ip_munin}-----
 	continue;
     fi
 
-    echo "A VPN-ben hasznalt nev: ${a}."
-    echo "A tarolt IP: 		${Ip_record}"
+    echo "A VPN-ben hasznalt nev: ${Nev}."
     echo "Az aktualis IP: 	${Ip_Current}"
     echo "A munin-ban IP: 	${Ip_munin}"
     echo
