@@ -10,7 +10,7 @@ Type=oneshot
 RemainAfterExit=yes
 SyslogIdentifier=%N
 
-WorkingDirectory=/etc/voli/docker
+WorkingDirectory=/etc/voli-env/docker
 
 ExecStart=/usr/bin/docker-compose --no-ansi -f %i.yaml up -d --no-color
 ExecStop =/usr/bin/docker-compose --no-ansi -f %i.yaml down
