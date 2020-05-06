@@ -7,8 +7,8 @@
 #:::::: Beallitasok :::::::::::
 
 		## Itt töltöm be a paramétereket ami alapján működünk
-if [ -e	/etc/voli/voli-myshaper.conf ]; then
-    . 	/etc/voli/voli-myshaper.conf
+if [ -e	/etc/voli-env/voli-myshaper.conf ]; then
+    . 	/etc/voli-env/voli-myshaper.conf
 else
 	echo Nincs konfig file!!!!!
 	exit 1

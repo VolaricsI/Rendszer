@@ -41,7 +41,7 @@ FWD_AdmPorts_Sor=20						## A ${FWD_XX_AdmPorts} forgalma ebbe a sorba kerül
 
 FWD_20_List=""
 FWD_20_AdmPorts=""
-FWD_30_List=" vpn_mail vpn_munin "
+FWD_30_List=" vpn_mail  "
 FWD_30_AdmPorts=""
 FWD_40_List=" docker_nc0 "
 FWD_40_AdmPorts=""
