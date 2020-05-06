@@ -1,0 +1,50 @@
+#!/bin/bash
+#	Created by Volarics Istvan (Voli)
+
+#:::::: Fix beallitasok :::::::
+. /etc/voli-env/ip-check.env
+
+#:::::: Beallitasok :::::::::::
+URL_CHECK_IP="http://checkip.dyndns.org"
+IP_SOR="Current IP Address:"
+UZENET_0="IP elteres!!! Itt:"
+UZENET_1="Vizsgalt host: "
+
+#:::::: Fuggvenyek ::::::::::::
+
+ElteresKereses(){
+	for a in ${HOSTOK}; do
+		Ret=$( ping -c1 ${a}|grep "^PING ${a}" )
+		if [ ".$?" != ".0" ]; then echo Nincs válasz: ${a}
+		else 	ip=$( echo ${Ret}|sed 's/.* (//g; s/).*$//g' )
+			echo "${UZENET_1} ${a}	--${Current_IP}--//--${ip}--"
+			if [ "${Current_IP}" != "${ip}" ]; then
+				echo "${UZENET_0} ${a}/${ip}."
+			fi
+		fi
+	done
+}
+
+#:::::::: Start :::::::::::::::
+	Result=$( curl -s --connect-timeout 5 --max-time 5 ${URL_CHECK_IP} ); Ret=$?
+
+	if [ ${Ret} -ne 0 ]; then 
+	    echo -e "Hiba a lekérdezés során: ${Ret}.\n\rAmit letöltöttem: \n\r${Result}\n\r<<==\r\n"
+	    exit 0
+	fi
+
+	Current_IP=$( echo ${Result}|sed "s/^.*${IP_SOR}//g; s/<.*$//g; s/ *//g; " )
+
+	Elteres=""
+	for a in ${HOSTOK}; do
+	    ip=$( host ${a} |grep "has address" |sed 's/.*has address *//' )
+	    if [ ".${Current_IP}" == ".${ip}" ]; then continue; fi
+
+		if [ -z "${Elteres}" ]; then
+		    Elteres=Van
+		    echo "Aktuális IP: ${Current_IP}"
+		fi
+		echo "A(z) ${a} IP-je: 	${ip}."
+	done
+
+exit 0;
