@@ -1,5 +1,0 @@
-#!/bin/sh
-#	Created by Volarics Istvan (Voli)
-
-docker exec rTorrent ellenorzes 	rTorrent
-docker exec BackEnd  ellenorzes 	BackEnd
