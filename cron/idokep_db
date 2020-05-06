@@ -3,7 +3,7 @@
 # Időkép automata adatgyüjtés és mentés .by VolaricsI
 #
 #:::::: Fix beallitasok :::::::
-#. /etc/voli-env/idokep_db.env
+. /etc/voli-env/idokep.env
 
 #:::::: Beallitasok :::::::::::
 URL="http://${HOST}/cgi-bin/luci/admin/status/automata/"
