@@ -19,7 +19,7 @@ RestartSec=30
 UMask=0007
 WorkingDirectory=/tmp
 
-EnvironmentFile=/etc/voli/syncthing/%i.conf
+EnvironmentFile=/etc/voli-env/syncthing/%i.conf
 
 Environment=DAEMON_NAME_UJ=syncthing-%i
 Environment=DAEMON_PRG=${HOME}/${DAEMON_NAME_UJ}
@@ -41,7 +41,7 @@ ExecStopPost=/bin/bash -c "/usr/bin/chpst -u ${USER} -U ${USER} /usr/bin/killall
 #[Install]
 #WantedBy=multi-user.target
 
-###------------- Mi kell az /etc/voli/syncthing/%i.conf file-ba ----------------------------------------------------------------------------
+###------------- Mi kell az /etc/voli-env/syncthing/%i.conf file-ba ----------------------------------------------------------------------------
 ###		#	Felhasználó és csoportja amivel majd futni fog
 ###	USER=username
 ###	GROUP=usergroup

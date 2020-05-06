@@ -3,7 +3,7 @@ Description=SyncThing starter for SyncThing service(s) by Voli
 
 After=local-fs.target network.target
 
-ConditionPathExists=/etc/voli/syncthing/
+ConditionPathExists=/etc/voli-env/syncthing/
 
 [Service]
 Type=oneshot
