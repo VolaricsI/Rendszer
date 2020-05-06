@@ -3,17 +3,13 @@
 # Időkép automata adatgyüjtés és mentés .by VolaricsI
 #
 #:::::: Fix beallitasok :::::::
-HOST="idokep_automata"
-USER=idokep
-DIR_SAVE=/var/lib/idokep/Idokep_
-MARAD=10
+#. /etc/voli-env/idokep_db.env
 
 #:::::: Beallitasok :::::::::::
 URL="http://${HOST}/cgi-bin/luci/admin/status/automata/"
 TMP_FILE=/tmp/$( basename $0 )_$$
 SAVE_KIT=.sql.gz
-FileNeve=${DIR_SAVE}$( date "+%Y-%m-%d_%H.%M.%S" )${SAVE_KIT}
-FileNeve=${DIR_SAVE}$( date "+%Y-%m-%d_%H.%M" )${SAVE_KIT}
+FileNeve=${SAVE_DIR}${SAVE_FILE_ELOTAG}$( date "+%Y-%m-%d_%H.%M.%S" )${SAVE_KIT}
 
 #:::::: Fuggvenyek ::::::::::::
 Mentes(){
@@ -39,7 +35,7 @@ if [ ".$1" == ".mentes" ]; then
 	exit 0
 fi
 
-	wget -t 1 -T 5 -nv -o /dev/null -O "${TMP_FILE}"  "${URL}"
+	curl --silent "${URL}" >"${TMP_FILE}"
 	if [ $? -ne 0 ]; then rm "${TMP_FILE}"; exit 1; fi
 
 	cat "${TMP_FILE}" 	|sgrep '"<h2>WS23XX m&eacute;rt adatai</h2> " .. "<h2>TE923/TE823 m&eacute;rt adatai</h2>"' |grep -v -e "^<.*> *$" -e "^$"|sed 's/<pre>//g; '  	>${TMP_FILE}1
@@ -53,9 +49,7 @@ fi
 	done < ${TMP_FILE}
 	rm ${TMP_FILE}
 	[ -z ${Relativ_paratartalom} ] || [ ${Relativ_paratartalom} -gt 100   ] && Relativ_paratartalom=NULL
-	[ ".${Kulso_homerseklet}" = ".81.0" ] && Kulso_homerseklet=NULL
-
-
+	[ ".${Kulso_homerseklet}" = ".81.0" ] && Kulso_homerseklet=NULL 					##Mert nem egész, ezért kell string-ként kezelni
 
 	SQL="USE idokep; "
 	SQL="${SQL} INSERT INTO adat (   Belso_homerseklet,    Belso_paratartalom,    Kulso_homerseklet,    Relativ_paratartalom,    Abszolut_legnyomas,    Relativ_legnyomas,    Csapadek_1h,    Csapadek_24h ) "
