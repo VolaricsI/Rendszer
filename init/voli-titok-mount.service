@@ -9,10 +9,10 @@ Type=oneshot
 RemainAfterExit=yes
 SyslogIdentifier=%N
 
-	## A fel/le csatolások sok időbe telhetnek... (btrfs + 10TB: több mint 90 sec)
+	## A fel/le csatolások sok időbe telhetnek... (btrfs >10TB: több mint 90 sec)
 TimeoutSec=180sec
 
-EnvironmentFile=/etc/voli/voli-titok.env
+EnvironmentFile=/etc/voli-env/voli-titok.env
 
 	## Az /etc/fstab-ban kell megadni a csatolás mikéntjét
 ExecStart=/bin/mount  	${MountPoint}
