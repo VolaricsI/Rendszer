@@ -17,10 +17,10 @@ Mentes(){
 
     Meret_most=$( wc -c <${FileNeve} )
     while : ; do
-	cnt=$( ls ${DIR_SAVE}*${SAVE_KIT} |grep -c "." )
+	cnt=$( ls ${SAVE_DIR}*${SAVE_KIT} |grep -c "." )
 	[  ${cnt} -gt ${MARAD} ] || break			##Csak $MARAD db kerül tárolásra
 
-	ls ${DIR_SAVE}*${SAVE_KIT}|sort|while read fname; do
+	ls ${SAVE_DIR}*${SAVE_KIT}|sort|while read fname; do
 	    Meret=$( wc -c <${fname} )
 	    [ ${Meret} -gt ${Meret_most} ] && continue		##A nagyobb méretüeket nem törlöm
 	    rm "${fname}"
