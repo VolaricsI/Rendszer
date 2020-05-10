@@ -23,7 +23,7 @@ ExecStartPre=/bin/bash -c "[ -e /etc/init.d/lirc ] && mv /etc/init.d/lirc /etc/i
 
 ExecStartPre=/bin/bash -c "[ -d /var/run/lirc ] || mkdir -p /var/run/lirc "
 
-ExecStart=/bin/bash -c "[ -e ${MCEUSB} ] && LIRC_Device=${MCEUSB}; exec /usr/sbin/lircd --nodaemon  --device=${LIRC_Device} /etc/lirc/lircd.conf"
+ExecStart=/bin/bash -c "[ -e ${MCEUSB} ] && LIRC_Device=${MCEUSB}; exec /usr/sbin/lircd --nodaemon  --device=${LIRC_Device} --driver default /etc/lirc/lircd.conf"
 
 
 [Install]
