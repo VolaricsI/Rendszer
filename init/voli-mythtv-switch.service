@@ -5,11 +5,9 @@ Description=Start/stop MythTV frontend with graphical interface by Voli
 Type=oneshot
 SyslogIdentifier=%N
 
-WorkingDirectory=/tmp
-
 Environment=SERVICE=nodm.service
 
 ExecStart=/bin/bash -c 'systemctl is-active ${SERVICE} ; Ret=$?; 	\
 			[ $Ret -eq 0 ] && systemctl stop ${SERVICE}; 	\
 			[ $Ret -ne 0 ] && systemctl start ${SERVICE}; 	\
-	exit 0 '
+			exit 0 '
