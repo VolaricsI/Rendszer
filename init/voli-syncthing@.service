@@ -17,7 +17,6 @@ Restart=always
 RestartSec=30
 
 UMask=0007
-WorkingDirectory=/tmp
 
 EnvironmentFile=/etc/voli-env/syncthing/%i.conf
 
