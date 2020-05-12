@@ -1,10 +1,9 @@
 [Unit]
 Description=IR Exec service by Voli
 
-After=local-fs.target voli-lirc.service
-Requires=voli-lirc.service
+After=local-fs.target lircd.service
+Requires=lircd.service
 
-ConditionFileIsExecutable=/usr/bin/irexec
 ConditionPathExists=/etc/lirc/lircrc
 
 
