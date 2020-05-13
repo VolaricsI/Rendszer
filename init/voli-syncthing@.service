@@ -37,8 +37,8 @@ ExecStart=/bin/bash    -c "/usr/bin/chpst -u ${USER} -U ${USER} ${DAEMON_PRG} -l
 ExecStopPost=/bin/bash -c "/usr/bin/chpst -u ${USER} -U ${USER} /usr/bin/killall ${DAEMON_NAME_UJ} || exit 0; "
 
 
-#[Install]
-#WantedBy=multi-user.target
+[Install]
+WantedBy=multi-user.target
 
 ###------------- Mi kell az /etc/voli-env/syncthing/%i.conf file-ba ----------------------------------------------------------------------------
 ###		#	Felhasználó és csoportja amivel majd futni fog
