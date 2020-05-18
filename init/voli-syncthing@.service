@@ -21,13 +21,13 @@ EnvironmentFile=/etc/voli-env/syncthing/%i.conf
 Environment=PRG_NAME=syncthing-%i
 Environment=PRG_FULL=${HOME}/${PRG_NAME}
 
-ExecStartPre=/bin/sh -c "[ -z "${HOME}" ] && ( echo Hianyzo kornyezeti valtozo: \"HOME\"...; exit 18; )" 		## Gáz ha nincs meg ez a változó
+ExecStartPre=/bin/sh -c "[ -n "${HOME}" ] || ( echo Hianyzo kornyezeti valtozo: \"HOME\"...; exit 18; )" 		## Gáz ha nincs meg ez a változó
 ExecStartPre=/bin/sh -c "[ -d "${HOME}" ] && chown -R ${USER}:${GROUP} ${HOME} " 					## Létezzen az ahol a saját adatait tárolja
 ExecStartPre=/bin/sh -c "[ -e "${PRG_FULL}" ] && rm ${PRG_FULL}; ln -s /usr/bin/syncthing ${PRG_FULL} " 		## Legyen egyedi neve a programnak amit majd futtatunk
-ExecStartPre=/bin/sh -c "for a in ${CSATOLASOK}; do mountpoint $a || exit 23 done;" 					## Ha nincs meg a csatolás akkor nem futhat, de lésöbb még lehet
+ExecStartPre=/bin/sh -c "for a in ${CSATOLASOK}; do mountpoint $a || exit 23; done;" 					## Ha nincs meg a csatolás akkor nem futhat, de lésöbb még lehet
 
 
-ExecStart=/bin/sh    -c "/usr/bin/chpst -u ${USER} -U ${USER} ${PRG_FULL} -logflags=0 -no-restart -no-browser -home=${HOME}  ${Param} "
+ExecStart=/bin/sh    -c "exec /usr/bin/chpst -u ${USER} -U ${USER} ${PRG_FULL} -logflags=0 -no-restart -no-browser -home=${HOME}  ${Param} "
 
 ExecStopPost=/bin/sh -c "/usr/bin/chpst -u ${USER} -U ${USER} /usr/bin/killall ${PRG_NAME} || exit 0; "
 
