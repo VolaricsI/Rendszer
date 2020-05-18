@@ -19,20 +19,18 @@ RestartSec=90
 UMask=0007
 
 EnvironmentFile=/etc/voli-env/syncthing/%i.conf
-
 Environment=DAEMON_NAME_UJ=syncthing-%i
 Environment=DAEMON_PRG=${HOME}/${DAEMON_NAME_UJ}
 
+ExecStartPre=/bin/bash -c " [ -d ${HOME} ] && chown -R ${USER}:${GROUP} ${HOME} " 					## Létezzen az ahol a saját adatait tárolja
+ExecStartPre=/bin/bash -c " [ -e ${DAEMON_PRG} ] && rm ${DAEMON_PRG}; ln -s /usr/bin/syncthing ${DAEMON_PRG} " 		## Legyen egyedi neve a programnak amit majd futtatunk
 
-ExecStartPre=/bin/bash -c " [ -d ${HOME} ] && chown -R ${USER}:${GROUP} ${HOME}; 		\
-			    [ -e ${DAEMON_PRG} ] && rm ${DAEMON_PRG}; 				\
-			    ln -s /usr/bin/syncthing ${DAEMON_PRG}; 				\
-			    for a in ${CSATOLASOK}; do 						\
-				mountpoint -q $a || ( echo Hiányzó csatolás: $a; exit 24; ); 	\
-			    done; "
+ExecStartPre=/bin/bash -c " for a in ${CSATOLASOK}; do 								\
+				mountpoint -q $a || ( echo Hiányzó csatolás: $a; sleep 120; exit 23; ); 	\
+			    done; " 											## Ha nincs meg a csatolás akkor nem futhat, de lésöbb még lehet
 
 
-ExecStart=/bin/bash    -c "/usr/bin/chpst -u ${USER} -U ${USER} ${DAEMON_PRG} -logfile=- -logflags=0 -no-restart -no-browser ${Param0} ${Param} "
+ExecStart=/bin/bash    -c "/usr/bin/chpst -u ${USER} -U ${USER} ${DAEMON_PRG} -logfile=- -logflags=0 -no-restart -no-browser -home=${HOME_DIR}  ${Param} "
 
 ExecStopPost=/bin/bash -c "/usr/bin/chpst -u ${USER} -U ${USER} /usr/bin/killall ${DAEMON_NAME_UJ} || exit 0; "
 
@@ -40,21 +38,22 @@ ExecStopPost=/bin/bash -c "/usr/bin/chpst -u ${USER} -U ${USER} /usr/bin/killall
 [Install]
 WantedBy=multi-user.target
 
+############################### Mi kell a konfig file-ba
+
 ###------------- Mi kell az /etc/voli-env/syncthing/%i.conf file-ba ----------------------------------------------------------------------------
 ###		#	Felhasználó és csoportja amivel majd futni fog
 ###	USER=username
 ###	GROUP=usergroup
 
 ###		#	Itt tárolja a saját adattait
-###	HOME=/home/V1/syncthing-alap
+###	HOME=/home/syncthing/V1
 ###		#	Azon csatolási pontok melyek kellenek a futásához
 ###	CSATOLASOK="/srv /home "
 
-###		#			Az átadandó paraméterek:
 ###		#	Az adatbázisának helye, ez fontos hiánya esetén a "${HOME}/.config/syncthing"-ben lesz; ha nincs %HOME% akkor nem fut
-###	Param0=" -home=${HOME_DIR} "
 
-###		#	további paraméter lehet; pl.
+###		#			Az átadandó paraméterek lehetnek:
+
 #	;Beszédes üzemmód
 ###	Param=" -verbose "
 #CSak a használt könyvtárakat írja ki és nem indul el!!!!
