@@ -1,4 +1,3 @@
-#By Voli
 [Unit]
 Description=SyncThing by Voli, service for %i
 
@@ -22,15 +21,13 @@ EnvironmentFile=/etc/voli-env/syncthing/%i.conf
 Environment=DAEMON_NAME_UJ=syncthing-%i
 Environment=DAEMON_PRG=${HOME}/${DAEMON_NAME_UJ}
 
-ExecStartPre=/bin/bash -c " [ -d ${HOME} ] && chown -R ${USER}:${GROUP} ${HOME} " 					## Létezzen az ahol a saját adatait tárolja
-ExecStartPre=/bin/bash -c " [ -e ${DAEMON_PRG} ] && rm ${DAEMON_PRG}; ln -s /usr/bin/syncthing ${DAEMON_PRG} " 		## Legyen egyedi neve a programnak amit majd futtatunk
-
-ExecStartPre=/bin/bash -c " for a in ${CSATOLASOK}; do 								\
-				mountpoint -q $a || ( echo Hiányzó csatolás: $a; sleep 120; exit 23; ); 	\
-			    done; " 											## Ha nincs meg a csatolás akkor nem futhat, de lésöbb még lehet
+ExecStartPre=/bin/bash -c " if [ -z "${HOME}" ]; then echo Hianyzo kornyezeti valtozo: \"HOME\"..; exit 18; fi " 		## Gáz ha nincs meg ez a változó
+ExecStartPre=/bin/bash -c "    [ -d "${HOME}" ] && chown -R ${USER}:${GROUP} ${HOME} " 						## Létezzen az ahol a saját adatait tárolja
+ExecStartPre=/bin/bash -c "    [ -e "${DAEMON_PRG}" ] && rm ${DAEMON_PRG}; ln -s /usr/bin/syncthing ${DAEMON_PRG} " 		## Legyen egyedi neve a programnak amit majd futtatunk
+ExecStartPre=/bin/bash -c "for a in ${CSATOLASOK}; do mountpoint $a || ( sleep 120; exit 23; ); done;" 				## Ha nincs meg a csatolás akkor nem futhat, de lésöbb még lehet
 
 
-ExecStart=/bin/bash    -c "/usr/bin/chpst -u ${USER} -U ${USER} ${DAEMON_PRG} -logfile=- -logflags=0 -no-restart -no-browser -home=${HOME_DIR}  ${Param} "
+ExecStart=/bin/bash    -c "/usr/bin/chpst -u ${USER} -U ${USER} ${DAEMON_PRG} -logfile=- -logflags=0 -no-restart -no-browser -home=${HOME}  ${Param} "
 
 ExecStopPost=/bin/bash -c "/usr/bin/chpst -u ${USER} -U ${USER} /usr/bin/killall ${DAEMON_NAME_UJ} || exit 0; "
 
@@ -39,24 +36,14 @@ ExecStopPost=/bin/bash -c "/usr/bin/chpst -u ${USER} -U ${USER} /usr/bin/killall
 WantedBy=multi-user.target
 
 ############################### Mi kell a konfig file-ba
-
 ###------------- Mi kell az /etc/voli-env/syncthing/%i.conf file-ba ----------------------------------------------------------------------------
 ###		#	Felhasználó és csoportja amivel majd futni fog
 ###	USER=username
 ###	GROUP=usergroup
-
-###		#	Itt tárolja a saját adattait
-###	HOME=/home/syncthing/V1
-###		#	Azon csatolási pontok melyek kellenek a futásához
-###	CSATOLASOK="/srv /home "
-
-###		#	Az adatbázisának helye, ez fontos hiánya esetén a "${HOME}/.config/syncthing"-ben lesz; ha nincs %HOME% akkor nem fut
-
-###		#			Az átadandó paraméterek lehetnek:
-
-#	;Beszédes üzemmód
-###	Param=" -verbose "
-#CSak a használt könyvtárakat írja ki és nem indul el!!!!
-##	Param=" -paths "
+###					#Itt tárolja a saját adattait
+###	HOME=/home/syncthing/V1		## Az adatbázisának helye, ez fontos hiánya esetén a "${HOME}/.config/syncthing"-ben lesz; ha nincs %HOME% akkor nem fut
+###	CSATOLASOK="/srv /home " 	#Azon csatolási pontok melyek kellenek a futásához
+###					Az átadandó paraméterek lehetnek pl:
+###	Param=" -verbose " 		##	;Beszédes üzemmód
+##	Param=" -paths " 		##CSak a használt könyvtárakat írja ki és nem indul el!!!!
 ##	Param=" -verbose  -paths "
-##----------------------------------------------------------------------------------------------------------------------------------------------
