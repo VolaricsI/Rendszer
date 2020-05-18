@@ -1,8 +1,8 @@
 [Unit]
-Description=Docker compose file-ok mindegyikének leállítása by Voli
+Description=Minden docker konténer leállítása by Voli
 
-After   =docker.service
-Requires=docker.service
+After   =local-fs.target docker.service
+Requires=local-fs.target docker.service
 
 
 [Service]
@@ -11,15 +11,15 @@ RemainAfterExit=yes
 SyslogIdentifier=%N
 
 
-WorkingDirectory=/etc/voli-env/docker
-
+Environment=GetComposeFile='{{ index .Config.Labels "com.docker.compose.project.working_dir"}}/{{ index .Config.Labels "com.docker.compose.project.config_files"}}'
 
 ExecStart=/bin/true
 
-ExecStop=/bin/sh -c 'ls *.yaml 	|while read a; do echo 	docker-compose --no-ansi -f $a down; 	\
-							docker-compose --no-ansi -f $a down; 	\
-							echo A $a result: $?.; 			\
-				done; 	exit 0; '
+	## A docker-compose által készített konténerek leállítása
+ExecStop=/bin/sh -c ' for f in $( docker container inspect  --format \'${GetComposeFile}\' $( docker container ls -q ) |sort -u; ) ; do docker-compose -f $f down; done '
+
+	## Minden még álló konténer leállítása
+ExecStopPost=/bin/sh -c ' for id in $(docker container ls -q) ; do docker container stop $id; done '
 
 
 [Install]
