@@ -9,8 +9,8 @@ Type=oneshot
 RemainAfterExit=yes
 SyslogIdentifier=%N
 
-	## A fel/le csatolások sok időbe telhetnek... (btrfs >10TB: több mint 90 sec)
-TimeoutSec=180sec
+	## A fel/le csatolások sok időbe telhetnek... (btrfs >10TB: több mint 180 sec)
+TimeoutStopSec=4min
 
 EnvironmentFile=/etc/voli-env/voli-titok.env
 

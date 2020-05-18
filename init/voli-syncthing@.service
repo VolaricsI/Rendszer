@@ -14,7 +14,7 @@ SyslogIdentifier=%N
 TimeoutStopSec=30
 
 Restart=always
-RestartSec=30
+RestartSec=90
 
 UMask=0007
 
