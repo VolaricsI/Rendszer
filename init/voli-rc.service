@@ -8,7 +8,7 @@ After=local-fs.target
 [Service]
 Type=oneshot
 
-ExecStart=/etc/voli-env/voli-rc
+ExecStart=/etc/voli-env/voli-rc.sh
 
 
 [Install]
