@@ -21,29 +21,27 @@ EnvironmentFile=/etc/voli-env/syncthing/%i.conf
 Environment=PRG_NAME=syncthing-%i
 Environment=PRG_FULL=${HOME}/${PRG_NAME}
 
-ExecStartPre=/bin/sh -c "[ -n "${HOME}" ] || ( echo Hianyzo kornyezeti valtozo: \"HOME\"...; exit 18; )" 		## Gáz ha nincs meg ez a változó
-ExecStartPre=/bin/sh -c "[ -d "${HOME}" ] && chown -R ${USER}:${GROUP} ${HOME} " 					## Létezzen az ahol a saját adatait tárolja
-ExecStartPre=/bin/sh -c "[ -e "${PRG_FULL}" ] && rm ${PRG_FULL}; ln -s /usr/bin/syncthing ${PRG_FULL} " 		## Legyen egyedi neve a programnak amit majd futtatunk
-ExecStartPre=/bin/sh -c "for a in ${CSATOLASOK}; do mountpoint $a || exit 23; done;" 					## Ha nincs meg a csatolás akkor nem futhat, de lésöbb még lehet
+ExecStartPre=/bin/sh -c ' [ -n "${HOME}" ] || ( echo Hianyzo kornyezeti valtozo: \"HOME\"...; exit 18; ) ' 	## Gáz ha nincs meg ez a változó
+ExecStartPre=/bin/sh -c ' [ -d "${HOME}" ] && chown -R ${USER}:${GROUP} ${HOME} ' 				## Létezzen az ahol a saját adatait tárolja
+ExecStartPre=/bin/sh -c ' [ -e "${PRG_FULL}" ] && rm ${PRG_FULL}; ln -s /usr/bin/syncthing ${PRG_FULL} ' 	## Legyen egyedi neve a programnak amit majd futtatunk
+ExecStartPre=/bin/sh -c ' for a in ${CSATOLASOK}; do mountpoint $a || exit 23; done ' 				## Ha nincs meg a csatolás akkor nem futhat, de lésöbb még lehet
 
 
-ExecStart=/bin/sh    -c "exec /usr/bin/chpst -u ${USER} -U ${USER} ${PRG_FULL} -logflags=0 -no-restart -no-browser -home=${HOME}  ${Param} "
+ExecStart=/bin/sh -c "exec /usr/bin/chpst -u ${USER} -U ${USER} ${PRG_FULL} -logflags=0 -no-restart -no-browser -home=${HOME}  ${Param} "
 
-ExecStopPost=/bin/sh -c "/usr/bin/chpst -u ${USER} -U ${USER} /usr/bin/killall ${PRG_NAME} || exit 0; "
+ExecStop =/bin/sh -c "/usr/bin/chpst -u ${USER} -U ${USER} /usr/bin/killall ${PRG_NAME} || exit 0; "
 
 
 [Install]
 WantedBy=multi-user.target
 
-############################### Mi kell a konfig file-ba
+############################### A konfig file
 ###------------- Mi kell az /etc/voli-env/syncthing/%i.conf file-ba ----------------------------------------------------------------------------
-###		#	Felhasználó és csoportja amivel majd futni fog
-###	USER=username
+###	USER=username 			#	Felhasználó és csoportja amivel majd futni fog
 ###	GROUP=usergroup
 ###					#Itt tárolja a saját adattait
-###	HOME=/home/syncthing/V1		## Az adatbázisának helye, ez fontos hiánya esetén a "${HOME}/.config/syncthing"-ben lesz; ha nincs %HOME% akkor nem fut
+###	HOME=/home/syncthing/V1 	## Az adatbázisának helye, ez fontos hiánya esetén a "${HOME}/.config/syncthing"-ben lesz; ha nincs %HOME% akkor nem fut
 ###	CSATOLASOK="/srv /home " 	#Azon csatolási pontok melyek kellenek a futásához
 ###					Az átadandó paraméterek lehetnek pl:
 ###	Param=" -verbose " 		##	;Beszédes üzemmód
-##	Param=" -paths " 		##CSak a használt könyvtárakat írja ki és nem indul el!!!!
-##	Param=" -verbose  -paths "
+##	Param=" -paths " 		##Csak a használt könyvtárakat írja ki és nem indul el!!!!
