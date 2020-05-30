@@ -8,6 +8,6 @@ SyslogIdentifier=%N
 Environment=SERVICE=nodm.service
 
 ExecStart=/bin/bash -c 'systemctl is-active ${SERVICE} ; Ret=$?; 	\
-			[ $Ret -eq 0 ] && systemctl stop ${SERVICE}; 	\
+			[ $Ret -eq 0 ] && systemctl stop  ${SERVICE}; 	\
 			[ $Ret -ne 0 ] && systemctl start ${SERVICE}; 	\
 			exit 0 '
