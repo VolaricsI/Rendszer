@@ -13,13 +13,12 @@ SyslogIdentifier=%N
 
 Environment=GetComposeFile='{{ index .Config.Labels "com.docker.compose.project.working_dir"}}/{{ index .Config.Labels "com.docker.compose.project.config_files"}}'
 
-ExecStart=/bin/true
+	## A docker-compose-zal létrehozottakat nem indíthatja a docker autómatán - mert azt én akarom csinálni - ezért leállítom őket
+ExecStart=/bin/sh -c ' Idk=$( docker container ls -q ); [ -z "$Idk" ] || docker container inspect --format \'${GetComposeFile}\' $Idk |sort -u |while read f; do docker-compose --no-ansi -f $f down ; done '
 
-	## A docker-compose által készített konténerek leállítása
-ExecStop=/bin/sh -c ' for f in $( docker container inspect  --format \'${GetComposeFile}\' $( docker container ls -q ) |sort -u; ) ; do docker-compose --no-ansi -f $f down 2>&1; done '
 
-	## Minden még álló konténer leállítása
-ExecStopPost=/bin/sh -c ' for id in $(docker container ls -q) ; do docker container stop $id; done '
+	## A még futó konténer leállítása (elég csak a conténereket); elképzelhető, hogy már nincs futó konténer!!
+ExecStop=/bin/sh -c ' Idk=$( docker container ls -q ); [ -z "$Idk" ] || docker container stop $Idk '
 
 
 [Install]
