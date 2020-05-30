@@ -11,11 +11,7 @@ SyslogIdentifier=%N
 
 WorkingDirectory=/etc/voli-env/syncthing/
 
-ExecStart=/bin/bash -c ' ls|grep conf$ |sed "s/.conf$//g" |while read a; do 	\
-			    echo systemctl start voli-syncthing@$a.service; 	\
-			         systemctl start voli-syncthing@$a.service; 	\
-			done; 							\
-			exit 0; '
+ExecStart=/bin/sh -c ' ls|grep conf$ |sed "s/.conf$//g" |while read a; do systemctl start voli-syncthing@$a.service; done '
 
 
 [Install]
