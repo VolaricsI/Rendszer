@@ -11,12 +11,10 @@ SyslogIdentifier=%N
 
 EnvironmentFile=/etc/voli-env/voli-titok.env
 
+
 ExecStartPre=/sbin/vgscan
 ExecStartPre=/sbin/lvscan
 ExecStart   =/sbin/lvchange --activate y ${LogicalVolume}
 
 ExecStop    =/sbin/lvchange --activate n ${LogicalVolume}
 ExecStopPost=/sbin/vgchange --activate n ${VolumeGroupName}
-
-## Ellenőrzésre a log-ba; mert látszódni fog az lv-k állapota
-ExecStopPost=/sbin/lvs
