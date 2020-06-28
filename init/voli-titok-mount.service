@@ -15,8 +15,8 @@ TimeoutStopSec=4min
 EnvironmentFile=/etc/voli-env/voli-titok.env
 
 	## Az /etc/fstab-ban kell megadni a csatolás mikéntjét
-ExecStart=/bin/sh -c 'mountpoint -q ${MountPoint} ||  mount ${MountPoint} ; '
-ExecStop =/bin/sh -c 'mountpoint -q ${MountPoint} && umount ${MountPoint} ; exit 0; '
+ExecStart=/bin/sh -c 'mountpoint -q ${MountPoint} || mount ${MountPoint} ; '
+ExecStop =/bin/sh -c 'mountpoint -q ${MountPoint} || exit 0; umount ${MountPoint} || exit 23; '
 
 ## Ellenőrzésre a log-ba; mert ha van akkor timeout-ra futott a le/felcsatolás
 ExecStopPost =/bin/df -h -t btrfs -t ext4
