@@ -15,7 +15,7 @@ AlapErtekFelvetel(){
 		if [ ! -b /dev/${a} ]; then continue; fi
 		echo $a
 		smartctl --all "/dev/${a}"	>${Referencia}${a}
-		Ret=$?1
+		Ret=$?
 		Serial=$( grep -e "^Serial Number:" ${Referencia}${a} |sed 's/.*: \+//g ' )
 		mv ${Referencia}${a} ${Referencia}${Serial}
 
@@ -25,13 +25,23 @@ AlapErtekFelvetel(){
 	done
 }
 
-Teszt(){
+ResultList(){
+	val=$1; mask=1
+	for i in 0 1 2 3 4 5 6 7; do
+	    echo "Bit $i: $(((val & mask) && 1))"
+	    mask=$((mask << 1))
+	done
+}
+
+Result(){
 	for a in ${HDDK} ; do
-		if [ ! -b /dev/${a} ]; then continue; fi
+		[ ! -b /dev/${a} ] && continue
 		echo $a
 		Result=$( smartctl --all "/dev/${a}" ); Ret=$?; 			# Így kell mert a smart resultja kell és nem a grep-é
+		[ $Ret -eq 0 ] && continue
 		echo "${Result}" |grep -e "Model Family:" -e "Device Model:" -e "^#" -e "Model Number:" -e "Serial Number:"
-		echo "Visszatérési érték: ${Ret}"
+		echo "Visszatérési érték: $Ret"
+		ResultList ${Ret}
 	done
 }
 
@@ -67,7 +77,7 @@ case "$1" in
 		AlapErtekFelvetel
 	;;
 	teszt)
-		Teszt
+		Result
 	;;
 	*)
 		Start
