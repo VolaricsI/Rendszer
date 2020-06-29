@@ -1,5 +1,5 @@
 [Unit]
-Description=Start/stop MythTV frontend with graphical interface by Voli
+Description=MythTV frontend with graphical interface Ki/Be kapcsolgató by Voli
 
 [Service]
 Type=oneshot
@@ -7,7 +7,7 @@ SyslogIdentifier=%N
 
 Environment=SERVICE=nodm.service
 
-ExecStart=/bin/sh -c 'systemctl is-active ${SERVICE} ; Ret=$?; 	\
-			[ $Ret -eq 0 ] && systemctl stop  ${SERVICE}; 	\
-			[ $Ret -ne 0 ] && systemctl start ${SERVICE}; 	\
+ExecStart=/bin/sh -c 'systemctl is-active ${SERVICE} >/dev/null; Ret=$?; 	\
+			[ $Ret -eq 0 ] && ( systemctl stop  ${SERVICE}; systemctl stop user-$( id -u mythtv ).slice ); 	\
+			[ $Ret -ne 0 ] &&   systemctl start ${SERVICE}; 	\
 			exit 0 '
