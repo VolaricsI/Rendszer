@@ -1,0 +1,5 @@
+
+#################################################
+	Remove_init_d fetchmail deluged
+
+	Service_Disable owfs.service owftpd.service owhttpd.service 		## Én nem használom

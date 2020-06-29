@@ -1,0 +1,85 @@
+#!/bin/sh
+#
+#	Create by Voli
+
+#:::::: Fix beallitasok :::::::
+INIT_DIR=/etc/init.d
+INIT_DIR_BAK=/etc/init.d.nemkell
+VOLI_SERVICE_DIR=/etc/voli/init
+SYSTEMD_DIR=/etc/systemd/system
+
+#:::::: Beallitasok :::::::::::
+#:::::: Ellenorzesek ::::::::::
+#:::::: functions :::::::::::::
+RunEnv(){				## Az egyedi beállítások használatának lehetősége
+    echo "------------ Konfig file-ok feldolgozása: $@"
+    while [ -n "$1" ]; do
+	[ -e "$1" ] && . "$1"
+	shift
+    done
+}
+
+Remove_init_d(){				## A SYSV indítók eltávolítása van systemd-s vagy mert nem kell
+    echo "A régi indító scriptek eltávolítása....."
+    [ -d ${INIT_DIR_BAK} ] || mkdir -p ${INIT_DIR_BAK}
+    while [ -n "$1" ] ; do
+	[   -e "${INIT_DIR}/$1"     ] &&  mv "${INIT_DIR}/$1" "${INIT_DIR_BAK}/"
+	[   -e "${INIT_DIR_BAK}/$1" ] && echo "A(z) $1: 	sikeresen átmozgatva."
+	[ ! -e "${INIT_DIR}/$1"     ] && [ ! -e "${INIT_DIR_BAK}/$1" ] && echo "A(z) $1: 	NEM találtam."
+	shift
+    done
+}
+
+Add_Sajatok_kivetelekkel(){
+    echo "------------ A sajátok telepítése:"
+    ls $VOLI_SERVICE_DIR/*.service|while read sv; do
+	Nev=$( basename $sv )
+	if [ ! -e $VOLI_SERVICE_DIR/$Nev ]; then echo NINCS: $sv ; continue; fi			## Ha nem az enyém akkor semmi
+	systemctl cat $Nev >/dev/null 2>&1 							## Ha telepítve volt, akkor deaktiválom
+	[ $? -eq 0 ] && systemctl disable $Nev
+	[ -e $SYSTEMD_DIR/$Nev ] && rm $SYSTEMD_DIR/$Nev 					## és eltávolítom
+	ln $VOLI_SERVICE_DIR/$Nev $SYSTEMD_DIR/$Nev 						## Telepítem
+	[ -e $SYSTEMD_DIR/$Nev ] && echo "Telepítve: $Nev"
+	systemctl cat $Nev 2>&1 |grep --silent -e "\[Install\]" 				## és Installálom ha kell
+	[ $? -eq 0 ] && systemctl enable $Nev
+    done
+    echo "------------ Ami nem kell azt leszedem:"
+    while [ -n "$1" ]; do
+	if [ ! -e $VOLI_SERVICE_DIR/$1 ]; then echo "NINCS: $1"; shift; continue; fi 		## Csak az enyémekkel foglalkozom
+	[   -e $SYSTEMD_DIR/$1 ] && systemctl disable $1 					## Deaktiválom és törlöm
+	[   -e $SYSTEMD_DIR/$1 ] && rm $SYSTEMD_DIR/$1
+	[ ! -e $SYSTEMD_DIR/$1 ] && echo "		Eltávolítva: $1"
+	shift
+    done
+    systemctl daemon-reload
+}
+
+Service_Disable(){			## Autómatikusan nem indulnak el
+    echo "------------ Letiltás:"
+    while [ -n "$1" ]; do
+	systemctl disable "$1"
+	echo -n "$1: 	" ; systemctl is-enabled "$1"
+	shift
+    done
+    systemctl daemon-reload
+}
+Service_Nevesit(){			## Nevesített servicet hoz létre formája. xxx@yyy.service
+    echo "------------ Nevesítés:"
+    while [ -n "$1" ]; do
+	systemctl enable "$1"
+	echo -n "$1: 	" ; systemctl is-enabled "$1"
+	shift
+    done
+    systemctl daemon-reload
+}
+
+#:::::::: Start :::::::::::::::
+
+	Add_Sajatok_kivetelekkel 	voli-lirc.service voli-fetchmail-starter.service voli-openvpn-starter.service
+
+	Remove_init_d munin lircd lircmd owftpd owhttpd owserver 		## Van systemd-s verzió!!!
+
+	RunEnv /etc/voli-env/Beallito
+
+exit 0
+ loginctl enable-linger $USER
