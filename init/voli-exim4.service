@@ -1,0 +1,29 @@
+[Unit]
+Description=Exim Mail Transport Agent by Voli
+After=local-fs.target network.target
+
+[Service]
+Type=simple
+PrivateTmp=true
+ProtectSystem=full
+SyslogIdentifier=%N
+
+PIDFile=/run/exim4/exim.pid
+
+    Environment=QUEUEINTERVAL=30m
+    EnvironmentFile=-/etc/default/exim4
+
+
+ExecStartPre=/bin/sh -c '/usr/sbin/exim4 -bV >/dev/null '
+ExecStartPre=/bin/sh -c '[ ! -e /var/log/exim4/paniclog ] || echo "ALERT: exim paniclog /var/log/exim4/paniclog has non-zero size, mail system possibly broken" '
+
+ExecStart=/usr/sbin/exim4 -bdf -q${QFLAGS}${QUEUEINTERVAL} $COMMONOPTIONS $QUEUERUNNEROPTIONS $SMTPLISTENEROPTIONS
+
+ExecReload=/bin/kill -HUP $MAINPID
+
+ExecStop=/bin/kill -TERM $MAINPID
+
+
+[Install]
+WantedBy=multi-user.target
+Alias=exim4.service

@@ -79,7 +79,7 @@ Service_Nevesit(){			## Nevesített servicet hoz létre formája. xxx@yyy.servic
 
 	Remove_init_d munin lircd lircmd owftpd owhttpd owserver 		## Van systemd-s verzió!!!
 
-	Remove_init_d proftpd 							## Van saját
+	Remove_init_d proftpd exim4 						## Van saját
 
 	RunEnv /etc/voli-env/Beallito
 
