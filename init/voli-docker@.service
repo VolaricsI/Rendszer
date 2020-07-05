@@ -13,9 +13,8 @@ SyslogIdentifier=%N
 
 WorkingDirectory=/etc/voli-env/docker
 
-ExecStart=/usr/bin/docker-compose --no-ansi -f %i.yaml up -d
-ExecStop =/usr/bin/docker-compose --no-ansi -f %i.yaml down
-
+ExecStart=            /usr/bin/docker-compose --no-ansi -f %i.yaml up -d
+ExecStop =/bin/sh -c '/usr/bin/docker-compose --no-ansi -f %i.yaml down ; exit 0'
 
 [Install]
 WantedBy=multi-user.target
