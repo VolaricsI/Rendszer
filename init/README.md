@@ -37,11 +37,17 @@ systemd-analyze verify default.target |perl -lne 'print $1 if m{Found.*?on\s+([^
 ##	voli-irexec.service, voli-lirc.service
 		Kellenek a távirányítóhoz tiltja a lirc-et
 
-##	voli-rc, voli-rc.service
+##	voli-rc.service /etc/voli-env.rc.sh
 		Induláskor ezeket kell beállítani
 
 ##	voli-myshaper,voli-myshaper.service
 		A forgalom korlátozást valósítja meg az internet felé
+
+##	voli-exim4.service
+		Lecserélem az initscript-es idítót
+
+##	voli-proftp.service
+		Lecserélem az initscript-es idítót
 
 ##	voli-openvpn-starter.service
 		Minden OpenVPN configra indít egy service-t, a gyári Unit-ot így modosítottam:
@@ -56,19 +62,18 @@ systemd-analyze verify default.target |perl -lne 'print $1 if m{Found.*?on\s+([^
 		Elindít minden felhasználónak egy voli-fetchmail@.service-t akinek van a $HOME könyvtárában .fetchmailrc file
 
 ##	voli-docker@
-		Az /etc/voli/docker könyvtárban lévő %i.yaml file-t indítja/állítja docker-compose-zal
+		Az /etc/voli-env/docker könyvtárban lévő %i.yaml file-t indítja/állítja docker-compose-zal
 		A systemctl enable voli-docker@teszt.service 	Következő boot-nál már elindul...
 ##	voli-docker-stop.service
-		Az /etc/voli/docker könyvtárban lévő minden *.yaml file-ra indít egy stop parancsot
+		Az /etc/voli-env/docker könyvtárban lévő minden *.yaml file-okra 
+		    start: Leállít minden éppen futó konténert amit docker-compose-zal lett betöltve
+		    stop:  indít egy stop parancsot
 		    
-##	voli-docker-starter.service	ELAVULT
-		Az /etc/voli/docker könyvtárban lévő összes .yaml-re indít egy voli-docker@.service
-
 
 ##	voli-syncthing@.service
-		Az /etc/voli-syncthing -ben található konfig a paramétere
+		Az /etc/voli-env/syncthing -ben található konfig a paramétere
 ##	voli-syncthing-starter.service
-		Minden az /etc/voli-syncthing -ben található configra indít egy voli-syncthing@.service-t
+		Minden az /etc/voli-env/syncthing -ben található config(ok)ra indít egy voli-syncthing@.service-t
 
 
 ##	Voli-titok-[disk|lvm|mount] 
@@ -76,8 +81,8 @@ systemd-analyze verify default.target |perl -lne 'print $1 if m{Found.*?on\s+([^
 	Megnyitja a titkosított diszeket, összerakja a rajtuk lévő LVM-et, majd csatolja
 
 	Feltételek:
-	    /etc/cypttab kitöltve: pl. akár több soron átt; komment lehet (^#); noauto kell, mivel bootkor még nincs kulcs
-		és "Titok_" kell kezdeni a <target name>-t
+	    /etc/cypttab kitöltve: pl. akár több soron átt; komment lehet (^#); noauto kell, mivel boot-kor még nincs kulcs
+		és "Titok_"-kal kell kezdeni a <target name>-t
 		# <target name>			<source device>		<key file>				<options>
 		Titok_Diszk_Így_lesz_Nevezve 	UUID=A_Diszk_UUID-je 	A_kulcs_helye_ami_nyitja_a_diszket 	luks,noauto
 		Titok_Diszk_Így_lesz_NevezveX 	UUID=A_Diszk_UUID-jeX 	A_kulcs_helye_ami_nyitja_a_diszketX 	luks,noauto
@@ -85,7 +90,8 @@ systemd-analyze verify default.target |perl -lne 'print $1 if m{Found.*?on\s+([^
 	    /etc/fstab a csatolásoknak itt kellelennie pl.
 		/dev/vgtitok/titkok 	/srv/titkos 	btrfs 	noauto,nodev,nosuid,noexec,subvol=/titkom 	0 	7
 
-	    /etc/voli/titok.env itt vannak a paraméterek
+	    
+	    /etc/voli-env/voli-titok.env itt vannak a paraméterek: voli-titok.env.example egy minta a tartalmára
 
 ##	voli-titok-disk
 	    Az /etc/crypttab -ban lévő összes "noauto" és kulcsfile-al (nem none, ami jelszavas lenne) rendelkező
@@ -94,6 +100,10 @@ systemd-analyze verify default.target |perl -lne 'print $1 if m{Found.*?on\s+([^
 ##	voli-titok-lvm
 	    Megkeresi és (de)aktiválja az LVM köteteket és VG-ket
 
-	voli-titok-mount
+##	voli-titok-mount
 	    (Le)Csatolja a titkosított diszkeken lévő filesystemeket
+
+##	voli-titok-docker@
+	    ugyan az mint a "voli-docker@" csak ez a "voli-titok-mount" után indulhat el
+
 
