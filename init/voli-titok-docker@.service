@@ -1,0 +1,21 @@
+#By Voli
+[Unit]
+Description=Docker-compose a titok utan: %i, by Voli.
+
+After   =voli-docker-stop.service voli-titok-mount.service
+Requires=voli-docker-stop.service voli-titok-mount.service
+
+
+[Service]
+Type=oneshot
+RemainAfterExit=yes
+SyslogIdentifier=%N
+
+WorkingDirectory=/etc/voli-env/docker
+
+ExecStart=            /usr/bin/docker-compose --no-ansi -f %i.yaml up -d
+ExecStop =/bin/sh -c '/usr/bin/docker-compose --no-ansi -f %i.yaml down ; exit 0'
+
+
+[Install]
+WantedBy=multi-user.target
