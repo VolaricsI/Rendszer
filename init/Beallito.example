@@ -1,5 +1,22 @@
+#!/bin/sh
+#
+#	Create by Voli
 
-#################################################
-	Remove_init_d fetchmail deluged
+#:::::: Fix beallitasok :::::::
+BEALLITO=/etc/voli/init/Beallito
+#:::::: Beallitasok :::::::::::
+[ -e "$BEALLITO" ] && . "$BEALLITO"
+#:::::: Ellenorzesek ::::::::::
+#:::::: functions :::::::::::::
 
-	Service_Disable owfs.service owftpd.service owhttpd.service 		## Én nem használom
+#:::::::: Start :::::::::::::::
+    Service_Nevesit syncthing@syncthing.service 
+
+    Service_NoAuto openvpn@example.service
+
+    Remove_initd syslog-ng iscsid mdadm 		## Mert van systemd-s verziójuk
+
+    Service_NoAuto  mdadm  iscsi iscsid.service iscsid.socket
+
+
+    Service_Disable owfs.service owftpd.service owhttpd.service 		## Én nem használom
