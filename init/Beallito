@@ -81,7 +81,7 @@ Service_Nevesit(){			## Nevesített servicet hoz létre formája. xxx@yyy.servic
 
 	Remove_init_d proftpd exim4 						## Van saját
 
-echo 	RunEnv /etc/voli-env/*-Beallito
+echo 	RunEnv /etc/voli-env/Beallito
 
 exit 0
  loginctl enable-linger $USER
