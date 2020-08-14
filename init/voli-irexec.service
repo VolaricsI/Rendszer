@@ -1,8 +1,8 @@
 [Unit]
 Description=IR Exec service by Voli
 
-After=local-fs.target lircd.service
-Requires=lircd.service
+After=local-fs.target voli-lirc@.service
+Requires=voli-lirc@.service
 
 ConditionPathExists=/etc/lirc/lircrc
 
