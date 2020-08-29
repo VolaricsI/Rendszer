@@ -9,6 +9,8 @@ ConditionFileIsExecutable=/usr/sbin/lircd
 ConditionPathExists=/etc/lirc/lircd.conf
 			### Innen veszi a parancssorban nem megadott paramétereit /etc/lirc/lirc_options.conf
 ConditionPathExists=/etc/lirc/lirc_options.conf
+			### Ezt az IR eszközt használjuk
+ConditionPathExists=/dev/%i
 
 
 [Service]
