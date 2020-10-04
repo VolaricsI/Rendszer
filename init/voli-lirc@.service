@@ -1,0 +1,30 @@
+[Unit]
+Description=LIRC service by Voli
+Documentation=man:lircd(8)
+
+
+After=local-fs.target
+
+ConditionFileIsExecutable=/usr/sbin/lircd
+ConditionPathExists=/etc/lirc/lircd.conf
+			### Innen veszi a parancssorban nem megadott paramétereit /etc/lirc/lirc_options.conf
+ConditionPathExists=/etc/lirc/lirc_options.conf
+			### Ezt az IR eszközt használjuk
+ConditionPathExists=/dev/%i
+
+
+[Service]
+Type=simple
+SyslogIdentifier=%N
+RestartSec=30s
+Restart=always
+
+
+ExecStartPre=/bin/sh -c "[ -d /var/run/lirc ] || mkdir -p /var/run/lirc; chmod 777 /var/run/lirc "
+
+ExecStart=/usr/sbin/lircd --nodaemon  --device=/dev/%i
+
+
+[Install]
+WantedBy=multi-user.target
+Alias=lirc.service

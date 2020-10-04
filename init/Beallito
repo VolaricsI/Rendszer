@@ -40,7 +40,7 @@ Sajat_Add(){				## $@: Lista; Beállítja és telepíti ha a sajátunk
 Sajatok_Add_kivetelekkel(){		## $@: Lista; Minden sajátot telepít kivéve a $@
     echo "------------ A sajátok telepítése:"
     ls $VOLI_SERVICE_DIR/*.service|while read sv; do
-	Add_Sajat $( basename $sv )
+	Sajat_Add $( basename $sv )
     done
     echo "------------ Ami nem kell azt leszedem:"
     while [ -n "$1" ]; do
@@ -82,3 +82,4 @@ Create_voli_rc(){				## A voli-rc.service-hez készíti el a voli-rc.sh linkjét
 
 #:::::::: Start :::::::::::::::
     cat $BEALLITO |grep "()" |grep -v "BEALLITO" |sed 's/{//'
+echo ----------------
