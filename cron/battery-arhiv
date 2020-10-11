@@ -1,0 +1,31 @@
+#!/bin/sh
+#
+#	Create by Voli
+
+#:::::: Fix beallitasok :::::::
+BATTERY_DIR="/sys/class/power_supply/axp20x-battery"
+
+#:::::: Beallitasok :::::::::::
+SZINT_JELZES=60
+SZINT_LEALL=30
+#:::::: Ellenorzesek ::::::::::
+	if [ ! -d "$BATTERY_DIR" ]; then echo "Hiányzik: $BATTERY_DIR..."; exit 1; fi
+
+#:::::: Run ::::::::::
+	    #	Nincs akkumulátoros üzem...
+	Status=$( cat "$BATTERY_DIR/status" )
+	[ ".$Status" != ".Discharging" ] && exit 0
+
+	    #Van benne bőven
+	Power=$( cat "$BATTERY_DIR/capacity" )
+	[ $Power -gt $SZINT_JELZES ] && exit 0
+
+	echo "Alacsony az akku kapacitás: ${Power}%..."
+
+	    #Még nem kell leállni
+	[ $Power -ge $SZINT_LEALL  ] && exit 0
+
+	    #Már nincs mit tenni
+	echo "Leállok mivel alacsony az akku kapacitása: ${Power}%..."
+	/bin/systemctl poweroff
+exit 0
