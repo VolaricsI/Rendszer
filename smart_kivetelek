@@ -26,6 +26,7 @@ User Capacity:
  193 Load_Cycle_Count
  194 Temperature_Celsius
  241 Total_LBAs_Written
+ 235 Unknown_Attribute
 #
 ### Változik a megitélés, de a raw érték jó
 7 Seek_Error_Rate .\+ 0$
