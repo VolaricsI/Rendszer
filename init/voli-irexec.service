@@ -5,6 +5,7 @@ After=local-fs.target voli-lirc@.service
 Requires=voli-lirc@.service
 
 ConditionPathExists=/etc/lirc/lircrc
+ConditionPathExists=/run/lirc/lircd
 
 
 [Service]
