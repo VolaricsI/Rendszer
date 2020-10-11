@@ -8,7 +8,7 @@ INIT_DIR_BAK=/etc/init.d.nemkell
 SYSTEMD_DIR=/etc/systemd/system
 VOLI_SERVICE_DIR=/etc/voli/init
 VOlI_ENV_DIR=/etc/voli-env
-###BEALLITO=				## A hívó script itt tartja ennek a file-nak az elérhetőségét
+BEALLITO=$VOLI_SERVICE_DIR/Beallito 				## A hívó script itt tartja ennek a file-nak az elérhetőségét
 #:::::: Beallitasok :::::::::::
 #:::::: Ellenorzesek ::::::::::
 #:::::: functions :::::::::::::
@@ -53,7 +53,7 @@ Sajatok_Add_kivetelekkel(){		## $@: Lista; Minden sajátot telepít kivéve a $@
     systemctl daemon-reload
 }
 
-Service_NoAuto(){			## Autómatikusan nem indulnak el
+Service_NoAuto(){			## $@: Lista; Autómatikusan nem indulnak el
     echo "------------ Letiltás:"
     while [ -n "$1" ]; do
 	systemctl disable "$1"
@@ -62,7 +62,7 @@ Service_NoAuto(){			## Autómatikusan nem indulnak el
     done
     systemctl daemon-reload
 }
-Service_Nevesit(){			## Nevesített servicet hoz létre formája. xxx@yyy.service
+Service_Nevesit(){			## $@: Lista; Nevesített servicet hoz létre formája. xxx@yyy.service
     echo "------------ Nevesítés:"
     while [ -n "$1" ]; do
 	systemctl enable "$1"
@@ -71,7 +71,7 @@ Service_Nevesit(){			## Nevesített servicet hoz létre formája. xxx@yyy.servic
     done
     systemctl daemon-reload
 }
-Create_voli_rc(){				## A voli-rc.service-hez készíti el a voli-rc.sh linkjét
+Create_voli_rc(){			## A voli-rc.service-hez készíti el a voli-rc.sh linkjét
     Cel=$VOlI_ENV_DIR/voli-rc.sh
     if [ ! -e voli-rc.sh ]; then echo "Hiányzó file: voli-rc.sh..."; exit 1; fi
     [ -L "$Cel" ] && rm $Cel
