@@ -6,7 +6,7 @@
 ^[0-9a-f]\+,[0-9a-f]\+,[0-9a-f]\+$
 #
 ### A fejléc
-smartctl 7.0 .\+\[x86_64-linux-.\+\].\+\(local build\)
+smartctl [0-9.]\+ .\+\[.\+\].\+\(local build\)
  Local Time is:
 Namespace 1 Size/Capacity:
 User Capacity:
