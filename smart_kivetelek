@@ -25,7 +25,9 @@ User Capacity:
  192 Power-Off_Retract_Count
  193 Load_Cycle_Count
  194 Temperature_Celsius
+ 240 Head_Flying_Hours
  241 Total_LBAs_Written
+ 242 Total_LBAs_Read
  235 Unknown_Attribute
 #
 ### Változik a megitélés, de a raw érték jó
