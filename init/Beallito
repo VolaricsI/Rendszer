@@ -80,6 +80,18 @@ Create_voli_rc(){			## A voli-rc.service-hez készíti el a voli-rc.sh linkjét
     Sajat_Add voli-rc.service
 }
 
+Create_myshaper(){			## A voli-rc.service-hez készíti el a voli-rc.sh linkjét
+    Cel=$VOlI_ENV_DIR/voli-myshaper.conf
+    if [ ! -e voli-myshaper.conf ]; then echo "Hiányzó file: voli-myshaper.conf..."; exit 1; fi
+    [ -L "$Cel" ] && rm $Cel
+    if [ -e $Cel ]; then echo "Létező file: $Cel..."; exit 2; fi
+    ln -s $( readlink -f voli-myshaper.conf |sed "s|$VOlI_ENV_DIR|.|" ) $Cel
+    Sajat_Add voli-myshaper.service
+}
+
+
+
+
 #:::::::: Start :::::::::::::::
     cat $BEALLITO |grep "()" |grep -v "BEALLITO" |sed 's/{//'
 echo ----------------
