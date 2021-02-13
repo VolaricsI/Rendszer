@@ -1,0 +1,14 @@
+#!/bin/bash
+#	Created by Volarics Istvan (Voli)
+
+#:::::: Fix beallitasok :::::::
+#:::::: Beallitasok :::::::::::
+#:::::: Fuggvenyek ::::::::::::
+#:::::::: Start :::::::::::::::
+    boinccmd  --get_tasks |grep -e "active_task_state: EXECUTING" >/dev/null
+    [ $? -eq 0 ] && exit 0
+
+    boinccmd  --get_tasks
+echo systemctl restart voli-docker@boinc.service
+    systemctl restart voli-docker@boinc.service
+    boinccmd  --get_tasks
