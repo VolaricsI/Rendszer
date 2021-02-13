@@ -64,7 +64,7 @@ Start(){
 		for b in $ReferenciaLista ; do
 		    grep -c -e "$Serial" "${b}" >/dev/null
 		    [ $? -ne 0 ] && continue
-			diff "${b}" "${TAROLO}/${a}" |grep -v -f "${KIVETELEK}"
+			diff "${b}" "${TAROLO}/${a}" |grep -v -f "${KIVETELEK}" -e "^[0-9a-f,]\+$"
 			break
 		done
 		[ $SmartExitCode -ne 0 ] && echo "SmartExitCode: $SmartExitCode."
