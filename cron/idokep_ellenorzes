@@ -8,7 +8,7 @@
 
 #:::::: Beallitasok :::::::::::
 	URL="https://www.idokep.hu/automata/${IDOKEP_AUTOMATA_NEV}"
-	SOR="Utolsó mérés:"
+	SOR="Utolsó mérés"
 #:::::: Fuggvenyek ::::::::::::
 #:::::::: Start :::::::::::::::
 	IdokepSor=$( curl --silent ${URL} |grep "${SOR}" )
@@ -17,7 +17,7 @@
 	    echo "Rossz vagy nincs válasz..."
 	    exit;
 	fi
-
+exit 0
 	Most=$( date "+%k*60+%M" )
 	Feltoltve=$( echo "${IdokepSor}"|sed "s/.*${SOR}//g; s/.*<b>//g; s/<\/b>.*//g; s/.* //g; s/:/*60+/g; s/^0//g; " )
 
