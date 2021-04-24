@@ -8,7 +8,9 @@
     boinccmd  --get_tasks |grep -e "active_task_state: EXECUTING" >/dev/null
     [ $? -eq 0 ] && exit 0
 
-    boinccmd  --get_tasks
-echo systemctl restart voli-docker@boinc.service
-    systemctl restart voli-docker@boinc.service
+	boinccmd  --get_tasks
+echo 	systemctl restart voli-docker@boinc.service
+	systemctl restart voli-docker@boinc.service
+
+    sleep 10
     boinccmd  --get_tasks
