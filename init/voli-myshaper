@@ -7,11 +7,11 @@
 #:::::: Beallitasok :::::::::::
 
 		## Itt töltöm be a paramétereket ami alapján működünk
-if [ ! -e /etc/voli-env/voli-myshaper.conf ]; then
+if [ ! -e /etc/voli/myshaper.conf ]; then
 	echo Nincs konfig file!!!!!
 	exit 1
 fi
-    . /etc/voli-env/voli-myshaper.conf 								## Config betöltése
+    . /etc/voli/myshaper.conf 									## Config betöltése
 
     [ ! -z "${FWD_20_List1}${FWD_30_List}${FWD_40_List}${FWD_50_List}" ] && FWD_Van=Igen 	## Van a forward-ra igény
 
