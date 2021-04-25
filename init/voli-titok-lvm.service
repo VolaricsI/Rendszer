@@ -9,7 +9,7 @@ Type=oneshot
 RemainAfterExit=yes
 SyslogIdentifier=%N
 
-EnvironmentFile=/etc/voli-env/voli-titok.env
+EnvironmentFile=/etc/env/titok.env
 
 
 ExecStartPre=/sbin/vgscan
