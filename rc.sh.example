@@ -1,0 +1,8 @@
+#!/bin/bash
+# Short-Description:	Alap beállítások
+# Description:		CPU managment-et performace-ra állítja
+#	Create by Voli
+
+    echo "Example!!!!"
+
+exit 0
