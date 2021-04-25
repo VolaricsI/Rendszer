@@ -1,5 +1,7 @@
 ## Ezekkel a sorokkal nem fog foglalkozni az összehasonlításkor
 #
+#	Üres sor NEM lehet!!!
+#
 ### A diff technikai kiírásainak elrejtése
 ^---$
 ^[0-9a-f]\+$
