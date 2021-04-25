@@ -3,7 +3,7 @@
 # Időkép automata adatgyüjtés és mentés .by VolaricsI
 #
 #:::::: Fix beallitasok :::::::
-. /etc/voli-env/idokep.env
+. /etc/voli/idokep.env
 
 #:::::: Beallitasok :::::::::::
 URL="http://${HOST}/cgi-bin/luci/admin/status/automata/"
@@ -54,6 +54,5 @@ fi
 	SQL="USE idokep; "
 	SQL="${SQL} INSERT INTO adat (   Belso_homerseklet,    Belso_paratartalom,    Kulso_homerseklet,    Relativ_paratartalom,    Abszolut_legnyomas,    Relativ_legnyomas,    Csapadek_1h,    Csapadek_24h ) "
 	SQL="${SQL} VALUES           ( ${Belso_homerseklet}, ${Belso_paratartalom}, ${Kulso_homerseklet}, ${Relativ_paratartalom}, ${Abszolut_legnyomas}, ${Relativ_legnyomas}, ${Csapadek_1h}, ${Csapadek_24h} ); "
-##	echo ${SQL}
 
 	mysql -u "${USER}" -e "${SQL}"
