@@ -2,7 +2,7 @@
 #	Created by Volarics Istvan (Voli)
 
 #:::::: Fix beallitasok :::::::
-. /etc/voli-env/ip-check.env
+. /etc/voli/ip-check.env
 
 #:::::: Beallitasok :::::::::::
 URL_CHECK_IP="http://checkip.dyndns.org"
