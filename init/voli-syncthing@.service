@@ -3,7 +3,7 @@ Description=SyncThing by Voli, service for %i
 
 After=local-fs.target network.target
 
-ConditionPathExists=/etc/voli-env/syncthing/%i.conf
+ConditionPathExists=/etc/voli/syncthing/%i.conf
 
 
 [Service]
