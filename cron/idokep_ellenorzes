@@ -4,7 +4,7 @@
 #NE futtasd 5 percenként sűrűbben mert kell idő az első kiolvasáshoz és felküldéshez....
 
 #:::::: Fix beallitasok :::::::
-	. /etc/voli-env/idokep.env
+	. /etc/voli/idokep.env
 
 #:::::: Beallitasok :::::::::::
 	URL="https://www.idokep.hu/automata/${IDOKEP_AUTOMATA_NEV}"
