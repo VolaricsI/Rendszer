@@ -7,7 +7,7 @@ INIT_DIR=/etc/init.d
 INIT_DIR_BAK=/etc/init.d.nemkell
 SYSTEMD_DIR=/etc/systemd/system
 VOLI_SERVICE_DIR=/etc/voli/init
-VOlI_ENV_DIR=/etc/voli-env
+VOlI_ENV_DIR=/etc/voli
 BEALLITO=$VOLI_SERVICE_DIR/Beallito 				## A hívó script itt tartja ennek a file-nak az elérhetőségét
 #:::::: Beallitasok :::::::::::
 #:::::: Ellenorzesek ::::::::::
@@ -40,15 +40,9 @@ Sajat_Add(){				## $@: Lista; Beállítja és telepíti ha a sajátunk
 Sajatok_Add_kivetelekkel(){		## $@: Lista; Minden sajátot telepít kivéve a $@
     echo "------------ A sajátok telepítése:"
     ls $VOLI_SERVICE_DIR/*.service|while read sv; do
+	echo "$@" |grep -e "$(basename $sv)" >/dev/null 					## Ami nem kell azt kihagyom
+	[ $? -eq 0 ] && continue;
 	Sajat_Add $( basename $sv )
-    done
-    echo "------------ Ami nem kell azt leszedem:"
-    while [ -n "$1" ]; do
-	if [ ! -e $VOLI_SERVICE_DIR/$1 ]; then echo "NINCS: $1"; shift; continue; fi 		## Csak az enyémekkel foglalkozom
-	[   -e $SYSTEMD_DIR/$1 ] && systemctl disable $1 					## Deaktiválom és törlöm
-	[   -e $SYSTEMD_DIR/$1 ] && rm $SYSTEMD_DIR/$1
-	[ ! -e $SYSTEMD_DIR/$1 ] && echo "		Eltávolítva: $1"
-	shift
     done
     systemctl daemon-reload
 }
@@ -71,18 +65,18 @@ Service_Nevesit(){			## $@: Lista; Nevesített servicet hoz létre formája. xxx
     done
     systemctl daemon-reload
 }
-Create_voli_rc(){			## A voli-rc.service-hez készíti el a voli-rc.sh linkjét
-    Cel=$VOlI_ENV_DIR/voli-rc.sh
-    if [ ! -e voli-rc.sh ]; then echo "Hiányzó file: voli-rc.sh..."; exit 1; fi
+Create_voli_rc(){			## A voli-rc.service-hez készíti el a rc.sh linkjét
+    Cel=$VOlI_ENV_DIR/rc.sh
+    if [ ! -e rc.sh ]; then echo "Hiányzó file: rc.sh..."; exit 1; fi
     [ -L "$Cel" ] && rm $Cel
     if [ -e $Cel ]; then echo "Létező file: $Cel..."; exit 2; fi
-    ln -s $( readlink -f voli-rc.sh |sed "s|$VOlI_ENV_DIR|.|" ) $Cel
+    ln -s $( readlink -f rc.sh |sed "s|$VOlI_ENV_DIR|.|" ) $Cel
     Sajat_Add voli-rc.service
 }
 
 Create_myshaper(){			## A voli-rc.service-hez készíti el a voli-rc.sh linkjét
-    Cel=$VOlI_ENV_DIR/voli-myshaper.conf
-    if [ ! -e voli-myshaper.conf ]; then echo "Hiányzó file: voli-myshaper.conf..."; exit 1; fi
+    Cel=$VOlI_ENV_DIR/myshaper.conf
+    if [ ! -e myshaper.conf ]; then echo "Hiányzó file: myshaper.conf..."; exit 1; fi
     [ -L "$Cel" ] && rm $Cel
     if [ -e $Cel ]; then echo "Létező file: $Cel..."; exit 2; fi
     ln -s $( readlink -f voli-myshaper.conf |sed "s|$VOlI_ENV_DIR|.|" ) $Cel

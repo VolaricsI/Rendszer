@@ -12,7 +12,7 @@ SyslogIdentifier=%N
 	## A fel/le csatolások sok időbe telhetnek... (btrfs >10TB: több mint 180 sec)
 TimeoutStopSec=4min
 
-EnvironmentFile=/etc/env/titok.env
+EnvironmentFile=/etc/voli/titok.env
 
 	## Az /etc/fstab-ban kell megadni a csatolás mikéntjét
 ExecStart=/bin/sh -c 'mountpoint -q ${MountPoint} || mount ${MountPoint} ; '
