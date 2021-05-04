@@ -5,6 +5,9 @@ Description=Alapvető beállításokat valósít meg by Voli
 After=local-fs.target
 
 
+ConditionPathExists=/etc/voli/rc.sh
+
+
 [Service]
 Type=oneshot
 

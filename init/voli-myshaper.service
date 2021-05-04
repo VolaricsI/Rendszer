@@ -5,6 +5,9 @@ Description=A forgalom korlátozást valósítja meg (feltöltés)  by Voli
 After=local-fs.target network.target
 
 
+ConditionPathExists=/etc/voli/init/voli-myshaper
+
+
 [Service]
 Type=oneshot
 Restart=no
