@@ -7,43 +7,57 @@ KIVETELEK=/etc/voli/smart_kivetelek
 #:::::: Beallitasok :::::::::::
 Referencia=${TAROLO}/Alap_
 ReferenciaLista=$( ls ${Referencia}* |sort )
-HDDK=$( ls /dev/sd[a-x] /dev/nvme[0-9]n[0-9]  2>/dev/null |sed 's/.*\///g;' |sort) 	#Ezekről készít
+HDDK=$( ls /dev/sd[a-x] /dev/nvme[0-9]n[0-9]  2>/dev/null |sed 's/.*\///g;' |sort) 	## Ezekről készíti a jelentést
 #:::::: Fuggvenyek ::::::::::::
-AlapErtekFelvetel(){
-	[ -d ${TAROLO} ] || mkdir -p ${TAROLO}
-	if [ ".$1" != "." ]; then HDDK=$1; fi				## Ha csak bizonyos hdd(k)-(e)t akarsz frissíteni
-	for a in ${HDDK} ; do
-		if [ ! -b /dev/${a} ]; then continue; fi
-		echo $a
-		smartctl --all "/dev/${a}"	>${Referencia}${a}
-		Ret=$?
-		Serial=$( grep -e "^Serial Number:" ${Referencia}${a} |sed 's/.*: \+//g ' )
-		mv ${Referencia}${a} ${Referencia}${Serial}
-
-		[ "$Ret" -eq 0 ] && continue
-		    cat ${Referencia}${Serial}
-		    echo "Visszatérési érték hiba: $Ret"
-	done
-}
-
-ResultList(){
+ResultList(){ 										## $1: A smartctl visszatérési értéke
+	echo "Visszatérési érték: $1"
 	val=$1; mask=1
 	for i in 0 1 2 3 4 5 6 7; do
-	    echo "Bit $i: $(((val & mask) && 1))"
+	    echo -n "Bit$i: $(((val & mask) && 1)); 	"
 	    mask=$((mask << 1))
 	done
+	echo ""
 }
 
-Result(){
+Teszt(){
 	for a in ${HDDK} ; do
 		[ ! -b /dev/${a} ] && continue
 		echo $a
-		Result=$( smartctl --all "/dev/${a}" ); Ret=$?; 			# Így kell mert a smart resultja kell és nem a grep-é
+		Result=$( smartctl --all "/dev/${a}" ); Ret=$?; 			## Így kell mert a smart resultja kell és nem a grep-é
 		[ $Ret -eq 0 ] && continue
 		echo "${Result}" |grep -e "Model Family:" -e "Device Model:" -e "^#" -e "Model Number:" -e "Serial Number:"
-		echo "Visszatérési érték: $Ret"
+
 		ResultList ${Ret}
 	done
+}
+
+AlapErtekFelvetel(){ 									## $1: a HDD neve
+	[ ! -b /dev/$1 ] && return
+	echo ">>>$1<<<<"
+	smartctl --all "/dev/$1"	>"${Referencia}$1"
+	Ret=$?
+	Serial=$( grep -e "^Serial Number:" "${Referencia}$1" |sed 's/.*: \+//g ' )
+	mv "${Referencia}$1" "${Referencia}${Serial}"
+	[ "$Ret" -eq 0 ] && return
+	    cat "${Referencia}${Serial}"
+	    ResultList $Ret
+}
+
+MindenAlapErtekFelvetel(){
+	[ -d ${TAROLO} ] || mkdir -p ${TAROLO}
+	for a in ${HDDK} ; do
+		AlapErtekFelvetel "$a"
+	done
+}
+
+GetAlapFile(){ 					## $1: A vizsgált eszköz neve (pl. sde); $2: A keresett szeria szám
+	for b in $ReferenciaLista ; do 		## Az "AlapFile" változóba teszi a referencia file nevét
+	    grep -c -e "$2" "${b}" >/dev/null
+	    [ $? -ne 0 ] && continue
+	    AlapFile="$b"
+	    return
+	done
+	AlapErtekFelvetel $1
 }
 
 Start(){
@@ -57,17 +71,12 @@ Start(){
 	for a in ${HDDK} ; do
 		smartctl --all "/dev/${a}" >"${TAROLO}/${a}" ; SmartExitCode=$?
 
-		ModelNev=$( grep -e "^Device Model:" -e "^Model Number:" "${TAROLO}/${a}" |sed 's/.*: \+//g ' )
-		Serial=$(   grep -e "^Serial Number:"                    "${TAROLO}/${a}" |sed 's/.*: \+//g ' )
+		ModelNev=$( grep -e "^Device Model:"  -e "^Model Number:" "${TAROLO}/${a}" |sed 's/.*: \+//g ' )
+		Serial=$(   grep -e "^Serial Number:"                     "${TAROLO}/${a}" |sed 's/.*: \+//g ' )
 		echo "------------------ ${a} --> ${ModelNev} ==> ${Serial} 	------------------"
 
-		for b in $ReferenciaLista ; do
-		    grep -c -e "$Serial" "${b}" >/dev/null
-		    [ $? -ne 0 ] && continue
-			diff "${b}" "${TAROLO}/${a}" |grep -v -f "${KIVETELEK}" -e "^[0-9a-f,]\+$"
-			break
-		done
-		[ $SmartExitCode -ne 0 ] && echo "SmartExitCode: $SmartExitCode."
+		GetAlapFile "$a" "$Serial"
+		diff "$AlapFile" "${TAROLO}/${a}" |grep -v -f "${KIVETELEK}" -e "^[0-9a-f,]\+$"
 	done
 }
 
@@ -75,10 +84,10 @@ Start(){
 #:::::::: Start :::::::::::::::
 case "$1" in
 	alap)
-		AlapErtekFelvetel $2
+		MindenAlapErtekFelvetel
 	;;
 	teszt)
-		Result
+		Teszt
 	;;
 	*)
 		Start
