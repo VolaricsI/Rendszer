@@ -17,7 +17,7 @@ RestartSec=4min
 
 UMask=0007
 
-EnvironmentFile=/etc/voli-env/syncthing/%i.conf
+EnvironmentFile=/etc/voli/syncthing/%i.conf
 Environment=PRG_NAME=syncthing-%i
 Environment=PRG_FULL=${HOME}/${PRG_NAME}
 
