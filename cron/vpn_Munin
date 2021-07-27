@@ -3,7 +3,7 @@
 #	Create by Voli
 
 #:::::: Fix beallitasok :::::::
-VPN_STATUS_FILE=/etc/openvpn/1_munin-srv.status 	#	Ez verzio 3-asra készült
+VPN_STATUS_FILE=/run/openvpn/1_munin-srv.status 	#	Ez verzio 3-asra készült
 
 #:::::: Beallitasok :::::::::::
 MUNIN_DIR=/etc/munin/munin-conf.d
