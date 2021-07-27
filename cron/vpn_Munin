@@ -9,7 +9,7 @@ VPN_STATUS_FILE=/run/openvpn/1_munin-srv.status 	#	Ez verzio 3-asra készült
 MUNIN_DIR=/etc/munin/munin-conf.d
 S_routeing="CLIENT_LIST"
 S_munin=address
-#:::::: Ellenorzesek ::::::::::
+#:::::::: Start :::::::::::::::
 cat ${VPN_STATUS_FILE} |grep "^CLIENT_LIST" |cut -d$'\t' -f 2,4 |while read a; do
     Nev=$( echo "$a"|cut -d$'\t' -f 1 )
 
