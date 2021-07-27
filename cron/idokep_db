@@ -14,10 +14,9 @@ FileNeve=${SAVE_DIR}${SAVE_FILE_ELOTAG}$( date "+%Y-%m-%d_%H.%M.%S" )${SAVE_KIT}
 #:::::: Fuggvenyek ::::::::::::
 Mentes(){
     mysqldump --user=${USER} --databases idokep | gzip >${FileNeve}
-
     Meret_most=$( wc -c <${FileNeve} )
     while : ; do
-	cnt=$( ls ${SAVE_DIR}*${SAVE_KIT} |grep -c "." )
+	cnt=$( ls ${SAVE_DIR}${SAVE_FILE_ELOTAG}*${SAVE_KIT} |grep -c "." )
 	[  ${cnt} -gt ${MARAD} ] || break			##Csak $MARAD db kerül tárolásra
 
 	ls ${SAVE_DIR}*${SAVE_KIT}|sort|while read fname; do
