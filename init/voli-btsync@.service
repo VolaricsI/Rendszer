@@ -1,0 +1,24 @@
+[Unit]
+    #By Voli
+    Description=Resilio Sync service
+    Documentation=https://help.resilio.com
+    After=network.target network-online.target
+
+[Service]
+
+    Restart=on-failure
+    PermissionsStartOnly=true
+    SyslogIdentifier=BtSync@%i
+
+    User=%i
+    Group=%i
+
+    UMask=0002
+    Environment="ConfFile=BtSync.conf"
+
+    ExecStartPre=/bin/sh -c "cd ~; [ -e $ConfFile  ] || /usr/bin/rslsync --dump-sample-config >$ConfFile && chown -Rc %i:%i $ConfFile "
+    ExecStart=/bin/sh    -c "cd ~; exec /usr/bin/rslsync --nodaemon --config $ConfFile "
+    ExecStartPost=/bin/sleep 1
+
+[Install]
+    WantedBy=multi-user.target
