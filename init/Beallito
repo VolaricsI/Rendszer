@@ -26,7 +26,7 @@ Remove_initd(){				## $@: Lista; A SYSV indítók eltávolítása mert: van syst
 Sajat_Add(){				## $@: Lista; Beállítja és telepíti ha a sajátunk
     while [ -n "$1" ]; do
 	Nev=$1; shift
-	if [ ! -e $VOLI_SERVICE_DIR/$Nev ]; then echo NINCS: $sv ; return; fi			## Ha nem az enyém akkor semmi
+	if [ ! -e $VOLI_SERVICE_DIR/$Nev ]; then echo NINCS: $Nev ; return; fi			## Ha nem az enyém akkor semmi
 	systemctl cat $Nev >/dev/null 2>&1 							## Ha telepítve volt, akkor deaktiválom
 	[ $? -eq 0 ] && systemctl disable $Nev
 	[ -e $SYSTEMD_DIR/$Nev ] && rm $SYSTEMD_DIR/$Nev 					## és eltávolítom
