@@ -31,6 +31,8 @@ User Capacity:
  241 Total_LBAs_Written
  242 Total_LBAs_Read
  235 Unknown_Attribute
+ 241 Total_Writes_GiB
+ 242 Total_Reads_GiB
 #
 ### Változik a megitélés, de a raw érték jó
 7 Seek_Error_Rate .\+ 0$
