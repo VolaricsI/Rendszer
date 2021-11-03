@@ -1,0 +1,9 @@
+## Szimbolikus linkek amik az adott gép beállításaira mutatnak
+docker
+idokep.env
+ip-check.env
+myshaper.conf
+rc.sh
+smart_kivetelek
+syncthing
+titok.env
