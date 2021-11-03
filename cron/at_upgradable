@@ -1,0 +1,14 @@
+#!/bin/bash
+#	Created by Volarics Istvan (Voli)
+
+#:::::: Fix beallitasok :::::::
+#:::::: Beallitasok :::::::::::
+#:::::: Fuggvenyek ::::::::::::
+#:::::::: Start :::::::::::::::
+    apt update 				>/dev/null 	2>&1
+
+    apt-get  upgrade --assume-no 	>/dev/null 	2>&1
+
+    [ $? -eq 0 ] && exit 0
+
+    apt-get  upgrade --assume-no
