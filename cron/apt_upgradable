@@ -7,8 +7,9 @@
 #:::::::: Start :::::::::::::::
     apt update 				>/dev/null 	2>&1
 
-    apt-get  upgrade --assume-no 	>/dev/null 	2>&1
+#    apt-get  upgrade --assume-no 	>/dev/null 	2>&1
+#    [ $? -eq 0 ] && exit 0
+#    apt-get  upgrade --assume-no
 
-    [ $? -eq 0 ] && exit 0
-
-    apt-get  upgrade --assume-no
+    apt list --upgradable 	2>&1 	|grep -v -e "WARNING: apt does not have a stable CLI interface. Use with caution in scripts." -e "^$" -e "^Felsorolás\.\.\."
+    exit 0	## A grep miatt, mivel ha nem talát minden kivételt, akkor exitkód 1
