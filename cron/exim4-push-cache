@@ -1,0 +1,14 @@
+#!/bin/bash
+#	Created by Volarics Istvan (Voli)
+
+#:::::: Fix beallitasok :::::::
+DIR=/var/spool/exim4/input
+#:::::: Beallitasok :::::::::::
+#:::::: Fuggvenyek ::::::::::::
+#:::::::: Start :::::::::::::::
+
+	Fname=$( ls $DIR/* 2>/dev/null |head -n 1 )
+
+	[ ! -e "$Fname" ] && exit 0
+
+	exim4 -qf
