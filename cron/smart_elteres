@@ -3,7 +3,7 @@
 
 #:::::: Fix beallitasok :::::::
 TAROLO="/var/lib/voli"
-KIVETELEK=/etc/voli/smart_kivetelek
+KIVETELEK=/etc/Rendszer/smart_kivetelek
 #:::::: Beallitasok :::::::::::
 Referencia=${TAROLO}/Alap_
 ReferenciaLista=$( ls ${Referencia}* |sort )
