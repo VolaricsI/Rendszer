@@ -6,8 +6,8 @@
 INIT_DIR=/etc/init.d
 INIT_DIR_BAK=/etc/init.d.nemkell
 SYSTEMD_DIR=/etc/systemd/system
-VOLI_SERVICE_DIR=/etc/voli/init
-VOlI_ENV_DIR=/etc/voli
+VOLI_SERVICE_DIR=/etc/Rendszer/init
+VOlI_ENV_DIR=/etc/Rendszer
 BEALLITO=$VOLI_SERVICE_DIR/Beallito 				## A hívó script itt tartja ennek a file-nak az elérhetőségét
 #:::::: Beallitasok :::::::::::
 #:::::: Ellenorzesek ::::::::::
