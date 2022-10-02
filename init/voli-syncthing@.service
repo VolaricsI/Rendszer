@@ -3,7 +3,7 @@ Description=SyncThing by Voli, service for %i
 
 After=local-fs.target network.target
 
-ConditionPathExists=/etc/voli/syncthing/%i.conf
+ConditionPathExists=/etc/Rendszer/syncthing/%i.conf
 
 
 [Service]
@@ -17,14 +17,14 @@ RestartSec=4min
 
 UMask=0007
 
-EnvironmentFile=/etc/voli/syncthing/%i.conf
+EnvironmentFile=/etc/Rendszer/syncthing/%i.conf
 Environment=PRG_NAME=syncthing-%i
 Environment=PRG_FULL=${HOME}/${PRG_NAME}
 
 ExecStartPre=/bin/sh -c ' [ -n "${HOME}" ] || ( echo Hianyzo kornyezeti valtozo: \"HOME\"...; exit 18; ) ' 	## Gáz ha nincs meg ez a változó
 ExecStartPre=/bin/sh -c ' [ -d "${HOME}" ] && chown -R ${USER}:${GROUP} ${HOME} ' 				## Létezzen az ahol a saját adatait tárolja
 ExecStartPre=/bin/sh -c ' [ -e "${PRG_FULL}" ] && rm ${PRG_FULL}; ln -s /usr/bin/syncthing ${PRG_FULL} ' 	## Legyen egyedi neve a programnak amit majd futtatunk
-ExecStartPre=/bin/sh -c ' for a in ${CSATOLASOK}; do mountpoint $a || exit 23; done ' 				## Ha nincs meg a csatolás akkor nem futhat, de lésöbb még lehet
+ExecStartPre=/bin/sh -c ' for a in ${CSATOLASOK}; do mountpoint $a || exit 23; done ' 				## Ha nincs meg a csatolás akkor nem futhat, de késöbb még lehet
 
 
 ExecStart=/bin/sh -c "exec /usr/bin/chpst -u ${USER} -U ${USER} ${PRG_FULL} -logflags=0 -no-restart -no-browser -home=${HOME}  ${Param} "
@@ -36,7 +36,7 @@ ExecStop =/bin/sh -c "/usr/bin/chpst -u ${USER} -U ${USER} /usr/bin/killall ${PR
 WantedBy=multi-user.target
 
 ############################### A konfig file
-###------------- Mi kell az /etc/voli-env/syncthing/%i.conf file-ba ----------------------------------------------------------------------------
+###------------- Mi kell az /etc/Rendszer-env/syncthing/%i.conf file-ba ----------------------------------------------------------------------------
 ###	USER=username 			#	Felhasználó és csoportja amivel majd futni fog
 ###	GROUP=usergroup
 ###					#Itt tárolja a saját adattait

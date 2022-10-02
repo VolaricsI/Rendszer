@@ -3,13 +3,13 @@ Description=SyncThing starter for SyncThing service(s) by Voli
 
 After=local-fs.target network.target
 
-ConditionPathExists=/etc/voli-env/syncthing/
+ConditionPathExists=/etc/Rendszer-env/syncthing/
 
 [Service]
 Type=oneshot
 SyslogIdentifier=%N
 
-WorkingDirectory=/etc/voli-env/syncthing/
+WorkingDirectory=/etc/Rendszer-env/syncthing/
 
 ExecStart=/bin/sh -c ' ls|grep conf$ |sed "s/.conf$//g" |while read a; do systemctl start voli-syncthing@$a.service; done '
 

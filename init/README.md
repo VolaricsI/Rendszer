@@ -37,7 +37,7 @@ systemd-analyze verify default.target |perl -lne 'print $1 if m{Found.*?on\s+([^
 ##	voli-irexec.service, voli-lirc.service
 		Kellenek a távirányítóhoz tiltja a lirc-et
 
-##	voli-rc.service /etc/voli-env.rc.sh
+##	voli-rc.service /etc/Rendszer-env/rc.sh
 		Induláskor ezeket kell beállítani
 
 ##	voli-myshaper,voli-myshaper.service
@@ -62,18 +62,18 @@ systemd-analyze verify default.target |perl -lne 'print $1 if m{Found.*?on\s+([^
 		Elindít minden felhasználónak egy voli-fetchmail@.service-t akinek van a $HOME könyvtárában .fetchmailrc file
 
 ##	voli-docker@
-		Az /etc/voli-env/docker könyvtárban lévő %i.yaml file-t indítja/állítja docker-compose-zal
+		Az /etc/Rendszer-env/docker könyvtárban lévő %i.yaml file-t indítja/állítja docker-compose-zal
 		A systemctl enable voli-docker@teszt.service 	Következő boot-nál már elindul...
 ##	voli-docker-stop.service
-		Az /etc/voli-env/docker könyvtárban lévő minden *.yaml file-okra 
+		Az /etc/Rendszer-env/docker könyvtárban lévő minden *.yaml file-okra 
 		    start: Leállít minden éppen futó konténert amit docker-compose-zal lett betöltve
 		    stop:  indít egy stop parancsot
 		    
 
 ##	voli-syncthing@.service
-		Az /etc/voli-env/syncthing -ben található konfig a paramétere
+		Az /etc/Rendszer-env/syncthing -ben található konfig a paramétere
 ##	voli-syncthing-starter.service
-		Minden az /etc/voli-env/syncthing -ben található config(ok)ra indít egy voli-syncthing@.service-t
+		Minden az /etc/Rendszer-env/syncthing -ben található config(ok)ra indít egy voli-syncthing@.service-t
 
 
 ##	Voli-titok-[disk|lvm|mount] 
@@ -91,7 +91,7 @@ systemd-analyze verify default.target |perl -lne 'print $1 if m{Found.*?on\s+([^
 		/dev/vgtitok/titkok 	/srv/titkos 	btrfs 	noauto,nodev,nosuid,noexec,subvol=/titkom 	0 	7
 
 	    
-	    /etc/voli-env/voli-titok.env itt vannak a paraméterek: voli-titok.env.example egy minta a tartalmára
+	    /etc/Rendszer-env/voli-titok.env itt vannak a paraméterek: voli-titok.env.example egy minta a tartalmára
 
 ##	voli-titok-disk
 	    Az /etc/crypttab -ban lévő összes "noauto" és kulcsfile-al (nem none, ami jelszavas lenne) rendelkező

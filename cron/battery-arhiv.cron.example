@@ -1,2 +1,2 @@
 
-*/5 	* * * * 	root 	/etc/voli/cron/battery-arhiv
+*/5 	* * * * 	root 	/etc/Rendszer/cron/battery-arhiv

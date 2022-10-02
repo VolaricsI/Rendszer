@@ -5,13 +5,13 @@ Description=Alapvető beállításokat valósít meg by Voli
 After=local-fs.target
 
 
-ConditionPathExists=/etc/voli/rc.sh
+ConditionPathExists=/etc/Rendszer/rc.sh
 
 
 [Service]
 Type=oneshot
 
-ExecStart=/etc/voli/rc.sh
+ExecStart=/etc/Rendszer/rc.sh
 
 
 [Install]

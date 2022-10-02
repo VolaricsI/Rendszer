@@ -3,7 +3,7 @@
 #	Create by Voli
 
 #:::::: Fix beallitasok :::::::
-BEALLITO=/etc/voli/init/Beallito
+BEALLITO=/etc/Rendszer/init/Beallito
 #:::::: Beallitasok :::::::::::
 [ -e "$BEALLITO" ] && . "$BEALLITO"
 #:::::: Ellenorzesek ::::::::::
