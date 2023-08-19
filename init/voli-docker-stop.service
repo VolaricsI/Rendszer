@@ -11,10 +11,10 @@ RemainAfterExit=yes
 SyslogIdentifier=%N
 
 
-Environment=GetComposeFile='{{ index .Config.Labels "com.docker.compose.project.working_dir"}}/{{ index .Config.Labels "com.docker.compose.project.config_files"}}'
+Environment=GetComposeFile='{{ index .Config.Labels "com.docker.compose.project.config_files"}}'
 
-	## A docker-compose-zal létrehozottakat nem indíthatja a docker autómatán - mert azt én akarom csinálni - ezért leállítom őket
-ExecStart=/bin/sh -c ' Idk=$( docker container ls -q ); [ -z "$Idk" ] || docker container inspect --format \'${GetComposeFile}\' $Idk |sort -u |while read f; do docker-compose --no-ansi -f $f down; done; '
+	## A docker compose-zal létrehozottakat nem indíthatja a docker autómatán - mert azt én akarom csinálni - ezért leállítom őket
+ExecStart=/bin/sh -c ' Idk=$( docker container ls -q ); [ -z "$Idk" ] || docker container inspect --format \'${GetComposeFile}\' $Idk |while read f; do docker compose --ansi never -f $f down; done; '
 
 
 	## A még futó konténer leállítása (elég csak a conténereket); elképzelhető, hogy már nincs futó konténer!!

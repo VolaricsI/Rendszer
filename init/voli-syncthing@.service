@@ -36,7 +36,7 @@ ExecStop =/bin/sh -c "/usr/bin/chpst -u ${USER} -U ${USER} /usr/bin/killall ${PR
 WantedBy=multi-user.target
 
 ############################### A konfig file
-###------------- Mi kell az /etc/Rendszer-env/syncthing/%i.conf file-ba ----------------------------------------------------------------------------
+###------------- Mi kell az /etc/Rendszer/syncthing/%i.conf file-ba ----------------------------------------------------------------------------
 ###	USER=username 			#	Felhasználó és csoportja amivel majd futni fog
 ###	GROUP=usergroup
 ###					#Itt tárolja a saját adattait
