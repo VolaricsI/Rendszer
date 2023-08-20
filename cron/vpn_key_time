@@ -7,13 +7,16 @@ DIR=/etc/openvpn 			##Hol vannak a kulcsok
 Szoljon=14 				##Ennyi nappal a lejárat elött szóljon
 
 #:::::: Beallitasok :::::::::::
-PAR_LEGACY=""
+PAR_LEGACY="--legacy"
 P0="notAfter="
 HatarNap=$[ $( date "+%s" ) + ${Szoljon} * 24 * 60 * 60 ]	##Határnap, ez elötti lejárat már intézkedést igényel; másodperc-ben számolva
 #:::::: Ellenorzesek ::::::::::
 
     dpkg -l |grep openssl |grep -q "3.0"
     [ $? -eq 0 ] && PAR_LEGACY=" -legacy "
+    Ver=$( openssl version |sed 's|.\+OpenSSL ||; s|\..\+||' )
+    [ $Ver -ge 3 ] && PAR_LEGACY=" -legacy "
+
 
 cd ${DIR}
 ls *.p12|sort|while read a; do
