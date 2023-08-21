@@ -7,21 +7,18 @@ DIR=/etc/openvpn 			##Hol vannak a kulcsok
 Szoljon=14 				##Ennyi nappal a lejárat elött szóljon
 
 #:::::: Beallitasok :::::::::::
-PAR_LEGACY="--legacy"
-P0="notAfter="
 HatarNap=$[ $( date "+%s" ) + ${Szoljon} * 24 * 60 * 60 ]	##Határnap, ez elötti lejárat már intézkedést igényel; másodperc-ben számolva
 #:::::: Ellenorzesek ::::::::::
 
-    Ver=$( openssl version |sed 's|.\+OpenSSL ||; s|\..\+||' )
-    [ $Ver -ge 3 ] && PAR_LEGACY=" -legacy "
+    Ver=$( openssl version |sed 's|^OpenSSL ||; s|\..\+||' )
+    [ $Ver -ge 3 ] && PAR_LEGACY="-legacy"
 
     tmpfile=/tmp/$(basename $0)_$$
-
 cd ${DIR}
 ls *.p12|sort|while read a; do
 	openssl pkcs12 -in $DIR/$a -out $tmpfile -password pass: -nodes $PAR_LEGACY
-	Lejarat=$( openssl x509 -in $tmpfile -noout -enddate |sed "s/^${P0}//g; " )
-	rm $tmpfile
+	Lejarat=$( openssl x509 -in $tmpfile -noout -enddate |sed "s/^notAfter=//g; " )
+	[ -e "$tmpfile" ] && rm $tmpfile
 	L0=$( date --date="${Lejarat}" "+%s" )
 	if [ ${HatarNap} -le ${L0} ]; then continue; fi
 	echo "${a} ===> $( date --date="${Lejarat}" )"
