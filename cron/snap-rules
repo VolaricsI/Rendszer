@@ -1,0 +1,14 @@
+#!/bin/sh
+#
+#	Create by Voli
+
+#:::::: Fix beallitasok :::::::
+Hely="/etc/udev/rules.d/"
+#:::::: Beallitasok :::::::::::
+#:::::: Ellenorzesek ::::::::::
+#:::::: functions :::::::::::::
+#:::::: Start :::::::::::::::::
+
+	ls $Hely |grep "70-snap\..*\.rules$" |grep -v "70-snap\.snapd\.rules" |while read f; do
+	    [ -e "${Hely}${f}" ] && rm "${Hely}${f}"
+	done
