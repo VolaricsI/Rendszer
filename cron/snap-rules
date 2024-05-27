@@ -10,5 +10,6 @@ Hely="/etc/udev/rules.d/"
 #:::::: Start :::::::::::::::::
 
 	ls $Hely |grep "70-snap\..*\.rules$" |grep -v "70-snap\.snapd\.rules" |while read f; do
+	    echo ----${f}----
 	    [ -e "${Hely}${f}" ] && rm "${Hely}${f}"
 	done
