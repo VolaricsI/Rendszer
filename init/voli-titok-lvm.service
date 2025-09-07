@@ -1,8 +1,8 @@
 [Unit]
 Description=Titkositott LVM by Voli
 
-After   =voli-titok-disks.service
-Requires=voli-titok-disks.service
+After   =voli-titok-raid.service
+Requires=voli-titok-raid.service
 
 [Service]
 Type=oneshot

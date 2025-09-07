@@ -1,21 +1,36 @@
 [Unit]
-Description=Titkositott diszkek kezelése by Voli
+Description=Titkosított diszkek kezelése by Voli
 
-After   =local-fs.target cryptsetup.target
+After=local-fs.target cryptsetup.target
 Requires=local-fs.target cryptsetup.target
-
 
 [Service]
 Type=oneshot
 RemainAfterExit=yes
 SyslogIdentifier=%N
 
-ExecStart =/bin/sh -c "	for t in $( grep -v -e "none" -e "^#" /etc/crypttab |grep "luks,noauto"|grep "Titok_" |sed 's/[ \t].*//g' ) ; do \
-			    cryptdisks_start $t ; 			\
-			done "
+ExecStart=/bin/sh -c '\
+    while read -r name rest; do \
+        case "$name" in \
+            \#*|"") continue ;; \
+        esac; \
+        case "$rest" in \
+            *luks,noauto) cryptdisks_start "$name" ;; \
+        esac; \
+    done < /etc/crypttab \
+'
 
+ExecStop=/bin/sh -c '\
+    while read -r name rest; do \
+        case "$name" in \
+            \#*|"") continue ;; \
+        esac; \
+        case "$rest" in \
+            *luks,noauto) cryptdisks_stop "$name" ;; \
+        esac; \
+    done < /etc/crypttab; \
+    exit 0 \
+'
 
-ExecStop =/bin/sh -c "	for t in $( grep -v -e "none" -e "^#" /etc/crypttab |grep "luks,noauto"|grep "Titok_" |sed 's/[ \t].*//g' ) ; do \
-			    cryptdisks_stop $t ; 			\
-			done ; 	\
-			exit 0 	"
+[Install]
+WantedBy=multi-user.target

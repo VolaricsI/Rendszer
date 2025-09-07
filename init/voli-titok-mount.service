@@ -21,3 +21,6 @@ ExecStop =/bin/sh -c 'mountpoint -q ${MountPoint} || exit 0; umount ${MountPoint
 ## Ellenőrzésre a log-ba; mert ha van akkor timeout-ra futott a le/felcsatolás
 ExecStopPost =/bin/df -h -t btrfs -t ext4
 ExecStartPost=/bin/df -h -t btrfs -t ext4
+
+[Install]
+WantedBy=multi-user.target

@@ -1,0 +1,17 @@
+[Unit]
+Description=Titkosított diszkek kezelése by Voli
+
+After=local-fs.target cryptsetup.target 	voli-titok-disks.service
+Requires=local-fs.target cryptsetup.target 	voli-titok-disks.service
+
+[Service]
+Type=oneshot
+RemainAfterExit=yes
+SyslogIdentifier=%N
+
+ExecStart=/bin/sh -c '/usr/sbin/mdadm --assemble --scan; exit 0'
+
+ExecStop=/bin/sh -c ' grep "^md[0-9]\+"  /proc/mdstat |sed 's/ *:.*//' |while read d; do /usr/sbin/mdadm --stop /dev/$d; done ; exit 0'
+
+#[Install]
+#WantedBy=multi-user.target
