@@ -44,7 +44,8 @@ function Status(){
 #	iptables -t mangle -L ${SH_FWD} -v -n
 #	echo ">>>>>>>>>"
 
-	iptables -t mangle -L ${SH_OUT} -v -n 	|grep -v "destination" 	|sed 's/MARK.*match 0x0//g; s/\/\*/\t\t\/\*/g; s/MARK set/\t/g; '
+#	iptables -t mangle -L ${SH_OUT} -v -n 	|grep -v "destination" 	|sed 's/MARK.*match 0x0//g; s/\/\*/\t\t\/\*/g; s/MARK set/\t/g; '
+	iptables -t mangle -L ${SH_OUT} -v -n 	|grep -v "pkts bytes target" 	|sed 's/MARK.*match 0x0//g; s/\/\*/\t\t\/\*/g; s/MARK set/\t/g; '
 	iptables -t mangle -L ${SH_FWD} -v -n 	|grep -v "destination" 	|sed 's/MARK.*--//g; s/\*.*\/\*/\t\/\*/g; s/MARK set/\t/g; '
 
 } #End Status()
@@ -69,6 +70,9 @@ function Iptables_Set(){
 	${IptablesMark} -p icmp 		-j MARK --set-mark 10 	-m comment --comment "ICMP (ping)      "
 	${IptablesMark} -p udp --dport domain 	-j MARK --set-mark 10 	-m comment --comment "(DNS)             "
 	${IptablesMark} -m length --length :64 	-j MARK --set-mark 10 	-m comment --comment "small packets (ACK)"
+
+	${IptablesMark} -m iprange --dst-range 192.168.230.1-192.168.230.255 -j MARK --set-mark 20 -m comment --comment "LOCAL VPN"
+
 
 	for sor in 10 20 30 40 50 ; do 									## Az adott portokra
 	    PORTS_List=PORTS_${sor}; 	if [ ".${!PORTS_List}" == "." ]; then continue; fi 		## Ha nincs port lista akkor nincs mit beállítani
