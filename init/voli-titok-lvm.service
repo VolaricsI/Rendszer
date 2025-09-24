@@ -18,3 +18,7 @@ ExecStart   =/sbin/lvchange --activate y ${LogicalVolume}
 
 ExecStop    =/sbin/lvchange --activate n ${LogicalVolume}
 ExecStopPost=/sbin/vgchange --activate n ${VolumeGroupName}
+
+
+[Install]
+WantedBy=multi-user.target
