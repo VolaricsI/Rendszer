@@ -12,22 +12,22 @@ SyslogIdentifier=%N
 ExecStart=/bin/sh -c '\
     while read -r name rest; do \
         case "$name" in \
-            \#*|"") continue ;; \
-        esac; \
+		#*|"") continue ;; \
+	esac; \
         case "$rest" in \
-            *luks,noauto) cryptdisks_start "$name" ;; \
-        esac; \
+		*luks,noauto) cryptdisks_start "$name" ;; \
+	esac; \
     done < /etc/crypttab \
 '
 
 ExecStop=/bin/sh -c '\
     while read -r name rest; do \
         case "$name" in \
-            \#*|"") continue ;; \
-        esac; \
+		#*|"") continue ;; \
+	esac; \
         case "$rest" in \
-            *luks,noauto) cryptdisks_stop "$name" ;; \
-        esac; \
+		*luks,noauto) cryptdisks_stop "$name" ;; \
+	esac; \
     done < /etc/crypttab; \
     exit 0 \
 '
